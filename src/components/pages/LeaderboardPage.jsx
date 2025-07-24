@@ -92,9 +92,9 @@ const LeaderboardPage = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <ApperIcon name="Trophy" className="w-8 h-8 text-gold-500" />
             <h1 className="text-4xl font-bold text-gradient">Quiz Leaderboard</h1>
-            <ApperIcon name="Trophy" className="w-8 h-8 text-gold-500" />
+<ApperIcon name="Trophy" className="w-8 h-8 text-gold-500" />
           </div>
-<p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Top performers in Hindu culture and mythology quizzes
           </p>
         </motion.div>
@@ -179,11 +179,11 @@ const LeaderboardPage = () => {
                             }`}
                             initial={{ width: 0 }}
                             animate={{ width: `${entry.percentage}%` }}
-                            transition={{ duration: 1, delay: 0.5 }}
+transition={{ duration: 1, delay: 0.5 }}
                           />
                         </div>
                       </div>
-)}
+                    )}
                   </Card>
                 </motion.div>
               ))}
@@ -197,9 +197,9 @@ const LeaderboardPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="mt-8 text-center"
+className="mt-8 text-center"
           >
-<Button 
+            <Button 
               onClick={async () => {
                 try {
                   const top10 = leaderboard.slice(0, 10)
@@ -262,7 +262,7 @@ const LeaderboardPage = () => {
                     }
                     document.body.removeChild(textarea)
                   }
-} catch (error) {
+                } catch (error) {
                   console.error('Sharing error:', error)
                   toast.error("Failed to share leaderboard. Please try again.")
                 }
@@ -272,6 +272,7 @@ const LeaderboardPage = () => {
               <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
               Share Top 10 on WhatsApp
             </Button>
+          </motion.div>
         )}
 
         {/* Action buttons */}
@@ -287,9 +288,9 @@ const LeaderboardPage = () => {
           </Button>
           <Button variant="secondary" onClick={() => window.location.href = "/quiz/random"}>
             <ApperIcon name="Shuffle" className="w-4 h-4 mr-2" />
-            Random Challenge
+Random Challenge
           </Button>
-<Button variant="outline" onClick={loadLeaderboard}>
+          <Button variant="outline" onClick={loadLeaderboard}>
             <ApperIcon name="RefreshCw" className="w-4 h-4 mr-2" />
             Refresh
           </Button>
