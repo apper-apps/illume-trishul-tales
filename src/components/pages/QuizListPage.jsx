@@ -32,10 +32,10 @@ const QuizListPage = () => {
     { value: "hard", label: "Hard" }
 ]
 
-  const ageGroups = [
+const ageGroups = [
     { value: "all", label: "All Ages" },
-    { value: "kids", label: "Kids (5-15)" },
-    { value: "adults", label: "Adults (16+)" }
+    { value: "kids", label: "👶 Kids" },
+    { value: "adults", label: "👨‍🎓 Adults" }
   ]
 
   useEffect(() => {

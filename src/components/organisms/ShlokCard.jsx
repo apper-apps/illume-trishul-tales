@@ -32,9 +32,10 @@ const generateShlokImage = async () => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       
-      // Set canvas size
-      canvas.width = 800
-      canvas.height = 1000
+// Set canvas size (mobile-friendly A4)
+      canvas.width = 794
+canvas.width = 794
+      canvas.height = 1123
       
       // Create gradient background
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
@@ -58,12 +59,12 @@ const generateShlokImage = async () => {
       ctx.textAlign = 'center'
       ctx.fillStyle = '#1f2937'
       
-      // Title
+// Title with emojis
       ctx.font = 'bold 32px Arial'
-      ctx.fillText('आज का श्लोक', canvas.width / 2, 120)
+      ctx.fillText('🕉️ आज का श्लोक 🕉️', canvas.width / 2, 120)
       ctx.font = '20px Arial'
       ctx.fillStyle = '#6b7280'
-      ctx.fillText('Daily Spiritual Wisdom', canvas.width / 2, 150)
+      ctx.fillText('✨ Daily Spiritual Wisdom ✨', canvas.width / 2, 150)
       
       // Sanskrit text
       ctx.fillStyle = '#1f2937'
@@ -109,10 +110,10 @@ const generateShlokImage = async () => {
         ctx.fillText(`Shared by: ${customName.trim()}`, canvas.width / 2, yPosition)
       }
       
-      // Footer
+// Footer with emojis
       ctx.font = '16px Arial'
       ctx.fillStyle = '#9ca3af'
-      ctx.fillText('🕉️ Trishul Tales', canvas.width / 2, canvas.height - 80)
+      ctx.fillText('🕉️ Trishul Tales 🌺', canvas.width / 2, canvas.height - 80)
       ctx.fillText('Hindu Culture & Wisdom', canvas.width / 2, canvas.height - 55)
       
       return canvas

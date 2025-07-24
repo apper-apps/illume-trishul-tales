@@ -83,7 +83,7 @@ const loadRandomQuiz = async (ageGroup) => {
       setQuestions(questionsData)
       setQuiz({
         title: `Hindu Mythology Quiz - ${ageGroup === 'kids' ? 'Kids' : 'Adults'}`,
-        description: `Test your knowledge of Hindu traditions and mythology (${ageGroup === 'kids' ? 'Ages 5-15' : 'Adults'})`,
+        description: `Test your knowledge of Hindu traditions and mythology`,
         duration: ageGroup === 'kids' ? 15 : 20,
         questionCount: questionsData.length,
         ageGroup: ageGroup
@@ -175,9 +175,10 @@ const handleSubmitQuiz = async () => {
 
     setShowNameModal(false)
     setQuizCompleted(true)
+setQuizCompleted(true)
 
     // Save score
-try {
+    try {
       await quizService.saveScore({
         userName: userName.trim(),
         score: score,
@@ -189,7 +190,6 @@ try {
       console.error("Failed to save score:", err)
     }
     toast.success(`Quiz completed! You scored ${score}/${questions.length}`)
-  }
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)
@@ -237,7 +237,7 @@ const getCertificateMessage = () => {
                 <div className="w-16 h-16 bg-gradient-saffron rounded-full flex items-center justify-center mx-auto mb-4">
                   <ApperIcon name="Users" className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-gradient mb-2">Select Age Group</h2>
+<h2 className="text-2xl font-bold text-gradient mb-2">Select Age Group</h2>
                 <p className="text-gray-600">Choose your age group for appropriate questions</p>
               </div>
 
@@ -248,7 +248,7 @@ const getCertificateMessage = () => {
                 >
                   <ApperIcon name="Baby" className="w-5 h-5" />
                   <div className="text-left">
-                    <div className="font-semibold">Kids (Ages 5-15)</div>
+                    <div className="font-semibold">👶 Kids</div>
                     <div className="text-xs opacity-90">Fun and simple questions</div>
                   </div>
                 </Button>
@@ -259,7 +259,7 @@ const getCertificateMessage = () => {
                 >
                   <ApperIcon name="GraduationCap" className="w-5 h-5" />
                   <div className="text-left">
-                    <div className="font-semibold">Adults (16+)</div>
+                    <div className="font-semibold">👨‍🎓 Adults</div>
                     <div className="text-xs opacity-90">Advanced questions</div>
                   </div>
                 </Button>
@@ -276,10 +276,10 @@ const getCertificateMessage = () => {
                 </Button>
               </div>
             </Card>
-          </motion.div>
+</motion.div>
         </div>
       </div>
-)
+    )
   }
 
   if (loading) {
@@ -411,46 +411,160 @@ const getCertificateMessage = () => {
                   <p className="text-xs text-gray-400">{new Date().toLocaleDateString('hi-IN')}</p>
                 </div>
 
-                {/* Action buttons */}
+{/* Action buttons */}
                 <div className="flex flex-col gap-3">
                   <Button 
-onClick={async () => {
-                      const text = `🏆 ${title}\n\n${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए!\n\n${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n#TrishulTales #HinduCulture #Quiz`
-                      
-                      // Try Web Share API first
-                      if (navigator.share) {
-                        try {
-                          await navigator.share({ 
-                            title: 'Hindu Culture Quiz Certificate', 
-                            text: text
-                          })
-                          toast.success("प्रमाणपत्र शेयर हो गया!")
-                        } catch (error) {
-                          console.log('Share failed, falling back to clipboard:', error)
-                          // Fall back to clipboard if share fails
-                          try {
-                            await navigator.clipboard.writeText(text)
-                            toast.success("प्रमाणपत्र कॉपी हो गया! अब WhatsApp में paste करें")
-                          } catch (clipboardError) {
-                            console.error('Clipboard failed:', clipboardError)
-                            toast.error("कॉपी नहीं हो सका। कृपया टेक्स्ट मैन्युअल रूप से कॉपी करें")
+                    onClick={async () => {
+                      try {
+                        // Generate certificate image
+                        const canvas = document.createElement('canvas')
+                        const ctx = canvas.getContext('2d')
+                        
+                        // Mobile-friendly A4 size (794x1123px for better WhatsApp display)
+                        canvas.width = 794
+                        canvas.height = 1123
+                        
+                        // Create gradient background
+                        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+                        gradient.addColorStop(0, '#FFF8F3')
+                        gradient.addColorStop(0.5, '#FFF0E6')
+                        gradient.addColorStop(1, '#FFE0CC')
+                        ctx.fillStyle = gradient
+                        ctx.fillRect(0, 0, canvas.width, canvas.height)
+                        
+                        // Add decorative border
+                        ctx.strokeStyle = '#FF6B35'
+                        ctx.lineWidth = 8
+                        ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
+                        
+                        // Add inner border
+                        ctx.strokeStyle = '#FFD700'
+                        ctx.lineWidth = 4
+                        ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80)
+                        
+                        // Set text properties
+                        ctx.textAlign = 'center'
+                        ctx.fillStyle = '#1f2937'
+                        
+                        // Title with emoji
+                        ctx.font = 'bold 36px Arial'
+                        ctx.fillText('🏆 प्रमाणपत्र 🏆', canvas.width / 2, 120)
+                        ctx.font = '24px Arial'
+                        ctx.fillStyle = '#6b7280'
+                        ctx.fillText('Hindu Culture Quiz Certificate', canvas.width / 2, 160)
+                        
+                        // User name section
+                        ctx.fillStyle = '#1f2937'
+                        ctx.font = '20px Arial'
+                        ctx.fillText('यह प्रमाणित किया जाता है कि', canvas.width / 2, 220)
+                        ctx.font = 'bold 32px Arial'
+                        ctx.fillText(userName, canvas.width / 2, 270)
+                        ctx.font = '20px Arial'
+                        ctx.fillText('ने सफलतापूर्वक पूर्ण किया है', canvas.width / 2, 310)
+                        
+                        // Achievement title with emoji
+                        ctx.font = 'bold 28px Arial'
+                        ctx.fillStyle = '#FF6B35'
+                        ctx.fillText(`${emoji} ${title}`, canvas.width / 2, 380)
+                        
+                        // Score section
+                        ctx.fillStyle = '#1f2937'
+                        ctx.font = 'bold 24px Arial'
+                        ctx.fillText(`स्कोर: ${score}/${questions.length} (${Math.round(percentage)}%)`, canvas.width / 2, 440)
+                        
+                        // Message section (wrapped text)
+                        ctx.font = '18px Arial'
+                        ctx.fillStyle = '#374151'
+                        const lines = wrapText(ctx, message, canvas.width - 120)
+                        let yPos = 500
+                        lines.forEach(line => {
+                          ctx.fillText(line, canvas.width / 2, yPos)
+                          yPos += 30
+                        })
+                        
+                        // Footer with emojis
+                        ctx.font = '20px Arial'
+                        ctx.fillStyle = '#9ca3af'
+                        ctx.fillText('🕉️ Trishul Tales 🕉️', canvas.width / 2, canvas.height - 100)
+                        ctx.fillText('Hindu Culture & Wisdom', canvas.width / 2, canvas.height - 70)
+                        ctx.font = '16px Arial'
+                        ctx.fillText(new Date().toLocaleDateString('hi-IN'), canvas.width / 2, canvas.height - 40)
+                        
+                        // Helper function for text wrapping
+                        function wrapText(ctx, text, maxWidth) {
+                          const words = text.split(' ')
+                          const lines = []
+                          let currentLine = words[0]
+                          
+                          for (let i = 1; i < words.length; i++) {
+                            const word = words[i]
+                            const width = ctx.measureText(currentLine + ' ' + word).width
+                            if (width < maxWidth) {
+                              currentLine += ' ' + word
+                            } else {
+                              lines.push(currentLine)
+                              currentLine = word
+                            }
                           }
+                          lines.push(currentLine)
+                          return lines
                         }
-                      } else {
-                        // No share API, try clipboard directly
-                        try {
-                          await navigator.clipboard.writeText(text)
-                          toast.success("प्रमाणपत्र कॉपी हो गया! अब WhatsApp में paste करें")
-                        } catch (error) {
-                          console.error('Clipboard not available:', error)
-                          toast.error("कॉपी नहीं हो सका। कृपया टेक्स्ट मैन्युअल रूप से कॉपी करें")
-                        }
+                        
+                        // Try to share image + text
+                        canvas.toBlob(async (blob) => {
+                          const text = `🏆 ${title}\n\n${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए! ${emoji}\n\n✨ ${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n🕉️ #TrishulTales #HinduCulture #Quiz`
+                          
+                          try {
+                            // Try Web Share API with image (best for mobile)
+                            if (navigator.share && navigator.canShare) {
+                              const file = new File([blob], 'certificate.png', { type: 'image/png' })
+                              const canShareFiles = await navigator.canShare({ files: [file] })
+                              
+                              if (canShareFiles) {
+                                await navigator.share({
+                                  title: 'Hindu Culture Quiz Certificate',
+                                  text: text,
+                                  files: [file]
+                                })
+                                toast.success("🎉 प्रमाणपत्र शेयर हो गया!")
+                                return
+                              }
+                            }
+                            
+                            // Fallback to WhatsApp direct link (mobile-friendly)
+                            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`
+                            const newWindow = window.open(whatsappUrl, '_blank')
+                            
+                            if (newWindow) {
+                              // Also download image for manual sharing
+                              const link = document.createElement('a')
+                              link.download = `certificate-${Date.now()}.png`
+                              link.href = URL.createObjectURL(blob)
+                              link.click()
+                              toast.success("📱 WhatsApp खुल गया! Image भी download हो गई है!")
+                            } else {
+                              // Final fallback to clipboard
+                              await navigator.clipboard.writeText(text)
+                              const link = document.createElement('a')
+                              link.download = `certificate-${Date.now()}.png`
+                              link.href = URL.createObjectURL(blob)
+                              link.click()
+                              toast.success("📋 Text copy और image download हो गई! WhatsApp में paste करें")
+                            }
+                          } catch (error) {
+                            console.error('Sharing failed:', error)
+                            toast.error("❌ शेयर नहीं हो सका। कृपया फिर से कोशिश करें")
+                          }
+                        }, 'image/png')
+                      } catch (error) {
+                        console.error('Certificate generation failed:', error)
+                        toast.error("❌ प्रमाणपत्र बनाने में समस्या हुई")
                       }
                     }}
                     className="bg-green-500 hover:bg-green-600 text-white"
                   >
                     <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
-                    WhatsApp पर शेयर करें
+                    📱 WhatsApp पर शेयर करें
                   </Button>
                   <div className="flex gap-3">
                     <Button 

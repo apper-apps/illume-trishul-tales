@@ -191,87 +191,196 @@ transition={{ duration: 1, delay: 0.5 }}
           </motion.div>
         )}
 
-        {/* Share Leaderboard */}
+{/* Share Leaderboard */}
         {leaderboard.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-className="mt-8 text-center"
+            className="mt-8 text-center"
           >
-            <Button 
-              onClick={async () => {
-                try {
-                  const top10 = leaderboard.slice(0, 10)
-                  let leaderboardText = "🏆 Hindu Culture Quiz Leaderboard - Top 10 🏆\n\n"
-                  
-                  top10.forEach((entry, index) => {
-                    const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
-                    leaderboardText += `${medal} ${entry.userName} - ${entry.percentage}% (${entry.score}/${entry.totalQuestions})\n`
-                  })
-                  
-                  leaderboardText += `\n🔗 Take the quiz yourself: ${window.location.origin}/quiz\n\n🕉️ Trishul Tales - Hindu Culture Quiz\nExplore the wisdom of Hindu traditions and mythology!`
-                  
-                  // Create WhatsApp URL for better mobile compatibility
-                  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(leaderboardText)}`
-                  
-                  // Try Web Share API first (works well on mobile)
-                  if (navigator.share && navigator.userAgent.includes('Mobile')) {
-                    try {
-                      await navigator.share({ 
-                        title: 'Hindu Culture Quiz Leaderboard', 
-                        text: leaderboardText
-                      })
-                      toast.success("Leaderboard shared successfully!")
-                      return
-                    } catch (shareError) {
-                      // User cancelled or share failed, continue with other methods
-                      console.log('Share API failed:', shareError)
-                    }
-                  }
-                  
-                  // Try opening WhatsApp directly
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button 
+                onClick={async () => {
                   try {
-                    const newWindow = window.open(whatsappUrl, '_blank')
-                    if (newWindow) {
-                      toast.success("Opening WhatsApp... Please send the message!")
-                      return
-                    }
-                  } catch (whatsappError) {
-                    console.log('WhatsApp direct open failed:', whatsappError)
-                  }
-                  
-                  // Fall back to clipboard
-                  try {
-                    await navigator.clipboard.writeText(leaderboardText)
-                    toast.success("Leaderboard copied! Now paste it on WhatsApp", {
-                      autoClose: 5000
+                    // Generate leaderboard image
+                    const canvas = document.createElement('canvas')
+                    const ctx = canvas.getContext('2d')
+                    
+                    // Mobile-friendly A4 size
+                    canvas.width = 794
+                    canvas.height = 1123
+                    
+                    // Create gradient background
+                    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
+                    gradient.addColorStop(0, '#FFF8F3')
+                    gradient.addColorStop(0.5, '#FFF0E6')
+                    gradient.addColorStop(1, '#FFE0CC')
+                    ctx.fillStyle = gradient
+                    ctx.fillRect(0, 0, canvas.width, canvas.height)
+                    
+                    // Add decorative border
+                    ctx.strokeStyle = '#FF6B35'
+                    ctx.lineWidth = 8
+                    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
+                    
+                    // Add inner border
+                    ctx.strokeStyle = '#FFD700'
+                    ctx.lineWidth = 4
+                    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80)
+                    
+                    // Title
+                    ctx.textAlign = 'center'
+                    ctx.fillStyle = '#1f2937'
+                    ctx.font = 'bold 32px Arial'
+                    ctx.fillText('🏆 Hindu Culture Quiz 🏆', canvas.width / 2, 100)
+                    ctx.font = 'bold 28px Arial'
+                    ctx.fillText('Top 10 Leaderboard', canvas.width / 2, 140)
+                    
+                    // Leaderboard entries
+                    const top10 = leaderboard.slice(0, 10)
+                    let yPos = 200
+                    
+                    top10.forEach((entry, index) => {
+                      const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
+                      
+                      // Background for top 3
+                      if (index < 3) {
+                        ctx.fillStyle = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32'
+                        ctx.globalAlpha = 0.2
+                        ctx.fillRect(60, yPos - 25, canvas.width - 120, 50)
+                        ctx.globalAlpha = 1
+                      }
+                      
+                      // Rank and medal
+                      ctx.fillStyle = '#1f2937'
+                      ctx.font = 'bold 24px Arial'
+                      ctx.textAlign = 'left'
+                      ctx.fillText(`${medal}`, 80, yPos)
+                      
+                      // Name
+                      ctx.font = '20px Arial'
+                      ctx.fillText(entry.userName, 140, yPos)
+                      
+                      // Score
+                      ctx.textAlign = 'right'
+                      ctx.font = 'bold 20px Arial'
+                      ctx.fillStyle = '#FF6B35'
+                      ctx.fillText(`${entry.percentage}%`, canvas.width - 140, yPos)
+                      ctx.font = '16px Arial'
+                      ctx.fillStyle = '#6b7280'
+                      ctx.fillText(`(${entry.score}/${entry.totalQuestions})`, canvas.width - 80, yPos)
+                      
+                      yPos += 70
                     })
-                  } catch (clipboardError) {
-                    console.error('All sharing methods failed:', clipboardError)
-                    // Create a temporary textarea for manual copy
-                    const textarea = document.createElement('textarea')
-                    textarea.value = leaderboardText
-                    document.body.appendChild(textarea)
-                    textarea.select()
-                    try {
-                      document.execCommand('copy')
-                      toast.success("Leaderboard copied! Now paste it on WhatsApp")
-                    } catch (execError) {
-                      toast.error("Please copy the leaderboard text manually")
-                    }
-                    document.body.removeChild(textarea)
+                    
+                    // Footer
+                    ctx.textAlign = 'center'  
+                    ctx.font = '18px Arial'
+                    ctx.fillStyle = '#9ca3af'
+                    ctx.fillText('🕉️ Trishul Tales - Hindu Culture Quiz 🕉️', canvas.width / 2, canvas.height - 80)
+                    ctx.fillText('Explore the wisdom of Hindu traditions!', canvas.width / 2, canvas.height - 50)
+                    ctx.font = '14px Arial'
+                    ctx.fillText(new Date().toLocaleDateString('hi-IN'), canvas.width / 2, canvas.height - 25)
+                    
+                    // Share image
+                    canvas.toBlob(async (blob) => {
+                      const top10 = leaderboard.slice(0, 10)
+                      let leaderboardText = "🏆 Hindu Culture Quiz Leaderboard - Top 10 🏆\n\n"
+                      
+                      top10.forEach((entry, index) => {
+                        const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
+                        leaderboardText += `${medal} ${entry.userName} - ${entry.percentage}% (${entry.score}/${entry.totalQuestions})\n`
+                      })
+                      
+                      leaderboardText += `\n✨ Take the quiz yourself: ${window.location.origin}/quiz\n\n🕉️ Trishul Tales - Hindu Culture Quiz\nExplore the wisdom of Hindu traditions and mythology! 🌺`
+                      
+try {
+                        // Try Web Share API with image (check File constructor availability)
+                        if (navigator.share && navigator.canShare && typeof File !== 'undefined') {
+                          const file = new File([blob], 'leaderboard.png', { type: 'image/png' })
+                          const canShareFiles = await navigator.canShare({ files: [file] })
+                          
+                          if (canShareFiles) {
+                            await navigator.share({
+                              title: 'Hindu Culture Quiz Leaderboard',
+                              text: leaderboardText,
+                              files: [file]
+                            })
+                            toast.success("🎉 Leaderboard shared successfully!")
+                            return
+                          }
+                        }
+                        
+                        // Fallback to WhatsApp with image download
+                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(leaderboardText)}`
+                        const newWindow = window.open(whatsappUrl, '_blank')
+                        
+                        if (newWindow) {
+                          const link = document.createElement('a')
+                          link.download = `leaderboard-${Date.now()}.png`
+                          link.href = URL.createObjectURL(blob)
+                          link.click()
+                          toast.success("📱 WhatsApp खुल गया! Image भी download हो गई!")
+                        } else {
+                          // Final fallback
+                          await navigator.clipboard.writeText(leaderboardText)
+                          const link = document.createElement('a')
+                          link.download = `leaderboard-${Date.now()}.png`
+                          link.href = URL.createObjectURL(blob)
+                          link.click()
+                          toast.success("📋 Text copy और image download हो गई!")
+                        }
+                      } catch (error) {
+                        console.error('Sharing failed:', error)
+                        toast.error("❌ Share नहीं हो सका। कृपया फिर से कोशिश करें")
+                      }
+                    }, 'image/png')
+                  } catch (error) {
+                    console.error('Image generation failed:', error)
+                    toast.error("❌ Image बनाने में समस्या हुई")
                   }
-                } catch (error) {
-                  console.error('Sharing error:', error)
-                  toast.error("Failed to share leaderboard. Please try again.")
-                }
-              }}
-              className="bg-green-500 hover:bg-green-600 text-white mb-6"
-            >
-              <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
-              Share Top 10 on WhatsApp
-            </Button>
+                }}
+                className="bg-green-500 hover:bg-green-600 text-white"
+              >
+                <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
+                📱 Share with Image
+              </Button>
+              
+              <Button 
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    const top10 = leaderboard.slice(0, 10)
+                    let leaderboardText = "🏆 Hindu Culture Quiz Leaderboard - Top 10 🏆\n\n"
+                    
+                    top10.forEach((entry, index) => {
+                      const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
+                      leaderboardText += `${medal} ${entry.userName} - ${entry.percentage}% (${entry.score}/${entry.totalQuestions})\n`
+                    })
+                    
+                    leaderboardText += `\n✨ Take the quiz yourself: ${window.location.origin}/quiz\n\n🕉️ Trishul Tales - Hindu Culture Quiz\nExplore the wisdom of Hindu traditions and mythology! 🌺`
+                    
+                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(leaderboardText)}`
+                    const newWindow = window.open(whatsappUrl, '_blank')
+                    
+                    if (newWindow) {
+                      toast.success("📱 WhatsApp opened! Please send the message!")
+                    } else {
+                      await navigator.clipboard.writeText(leaderboardText)
+                      toast.success("📋 Leaderboard copied! Paste it on WhatsApp")
+                    }
+                  } catch (error) {
+                    console.error('Text sharing failed:', error)
+                    toast.error("❌ Text share नहीं हो सका")
+                  }
+                }}
+                className="text-green-600 border-green-500 hover:bg-green-50"
+              >
+                <ApperIcon name="MessageCircle" className="w-4 h-4 mr-2" />
+                📝 Share Text Only
+              </Button>
+            </div>
           </motion.div>
         )}
 
