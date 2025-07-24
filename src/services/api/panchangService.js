@@ -82,10 +82,10 @@ async getPanchangByDate(date) {
       
       const response = await apperClient.fetchRecords(this.tableName, params);
       
-      // Handle response error
+// Handle response error
       if (!response.success) {
         console.error("Error fetching panchang in panchang service:", response.message);
-        throw new Error(response.message);
+        return null; // Return null instead of throwing to allow graceful handling
       }
       
       // If we found data for the specific date, return it
@@ -136,10 +136,10 @@ async getPanchangByDate(date) {
       
       const randomResponse = await apperClient.fetchRecords(this.tableName, randomParams);
       
-      // Handle random response error
+// Handle random response error
       if (!randomResponse.success) {
         console.error("Error fetching fallback panchang in panchang service:", randomResponse.message);
-        throw new Error(randomResponse.message);
+        return null; // Return null instead of throwing to allow graceful handling
       }
       
       if (randomResponse.data && randomResponse.data.length > 0) {
