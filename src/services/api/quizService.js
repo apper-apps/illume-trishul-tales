@@ -33,14 +33,17 @@ class QuizService {
     await delay(500)
     const shuffled = [...questionData].sort(() => 0.5 - Math.random())
     return shuffled.slice(0, count).map(q => ({ ...q }))
-  }
+}
 
   async saveScore(scoreData) {
     await delay(300)
     const scores = JSON.parse(localStorage.getItem("quizScores") || "[]")
     const newScore = {
       Id: scores.length + 1,
-      ...scoreData,
+      userName: scoreData.userName || "Anonymous User",
+      score: scoreData.score,
+      totalQuestions: scoreData.totalQuestions,
+      category: scoreData.category || "General",
       completedAt: new Date().toISOString()
     }
     scores.push(newScore)

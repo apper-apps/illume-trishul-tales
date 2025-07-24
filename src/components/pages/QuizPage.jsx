@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
 import Button from "@/components/atoms/Button"
 import Card from "@/components/atoms/Card"
+import Input from "@/components/atoms/Input"
 import QuizOption from "@/components/molecules/QuizOption"
 import Loading from "@/components/ui/Loading"
 import Error from "@/components/ui/Error"
@@ -14,7 +15,7 @@ const QuizPage = () => {
   const { quizId } = useParams()
   const navigate = useNavigate()
   
-  const [quiz, setQuiz] = useState(null)
+const [quiz, setQuiz] = useState(null)
   const [questions, setQuestions] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
@@ -25,6 +26,8 @@ const QuizPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [quizCompleted, setQuizCompleted] = useState(false)
+  const [showNameModal, setShowNameModal] = useState(false)
+  const [userName, setUserName] = useState("")
 
   useEffect(() => {
     if (quizId) {
@@ -119,9 +122,7 @@ const QuizPage = () => {
     }
   }
 
-  const handleSubmitQuiz = async () => {
-    setQuizCompleted(true)
-    
+const handleSubmitQuiz = async () => {
     let calculatedScore = 0
     questions.forEach((question, index) => {
       if (answers[index] === question.correctAnswer) {
@@ -130,12 +131,23 @@ const QuizPage = () => {
     })
 
     setScore(calculatedScore)
+    setShowNameModal(true)
+  }
+
+  const handleNameSubmit = async () => {
+    if (!userName.trim()) {
+      toast.error("कृपया अपना नाम दर्ज करें")
+      return
+    }
+
+    setShowNameModal(false)
+    setQuizCompleted(true)
 
     // Save score
     try {
       await quizService.saveScore({
-        userName: "Anonymous User",
-        score: calculatedScore,
+        userName: userName.trim(),
+        score: score,
         totalQuestions: questions.length,
         category: quiz?.category || "General"
       })
@@ -143,7 +155,7 @@ const QuizPage = () => {
       console.error("Failed to save score:", err)
     }
 
-    toast.success(`Quiz completed! You scored ${calculatedScore}/${questions.length}`)
+    toast.success(`Quiz completed! You scored ${score}/${questions.length}`)
   }
 
   const formatTime = (seconds) => {
@@ -152,12 +164,29 @@ const QuizPage = () => {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const getScoreMessage = () => {
+const getCertificateMessage = () => {
     const percentage = (score / questions.length) * 100
-    if (percentage >= 90) return "Excellent! You're a Hindu culture expert! 🎉"
-    if (percentage >= 70) return "Great job! You have good knowledge! 👏"
-    if (percentage >= 50) return "Good effort! Keep learning! 📚"
-    return "Don't worry, keep exploring to improve! 💪"
+    let emoji, title, message
+
+    if (percentage >= 90) {
+      emoji = '🏆'
+      title = 'शास्त्रों के मर्मज्ञ!'
+      message = 'आपकी शास्त्रों में गहरी समझ और भक्ति अद्भुत है। आपने अध्यात्म में वह ऊँचाई छू ली है जो साधना और अध्ययन से ही संभव है। इसे दोस्तों व परिवार से जरूर साझा करें!'
+    } else if (percentage >= 70) {
+      emoji = '🌟'
+      title = 'समर्पित साधक!'
+      message = 'आपने शास्त्रों का अच्छा ज्ञान अर्जित किया है। निरंतर अभ्यास और पढ़ाई से आप और भी ऊँचाइयाँ प्राप्त कर सकते हैं। इसे मित्रों में साझा करें और उन्हें भी प्रेरित करें।'
+    } else if (percentage >= 50) {
+      emoji = '📚'
+      title = 'अध्ययनरत भक्त!'
+      message = 'आपको शास्त्रों की आधारभूत जानकारी है। और अधिक पढ़ाई व मनन से आप भी गहराई तक पहुँच सकते हैं। अपने दोस्तों को भी प्रेरित करने के लिए इसे शेयर करें।'
+    } else {
+      emoji = '🙏'
+      title = 'आरंभिक साधक!'
+      message = 'हर यात्रा की शुरुआत एक छोटे कदम से होती है। शास्त्रों को पढ़ते रहें, सीखते रहें और इस ज्ञान यात्रा में आगे बढ़ें। इसे अपने प्रियजनों संग शेयर करें ताकि वे भी इस मार्ग पर चलें।'
+    }
+
+    return { emoji, title, message, percentage }
   }
 
   if (loading) {
@@ -180,57 +209,156 @@ const QuizPage = () => {
     )
   }
 
-  if (quizCompleted) {
+// Name input modal
+  if (showNameModal) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-gold-50 py-8">
-        <div className="max-w-2xl mx-auto px-4">
+        <div className="max-w-md mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="card-spiritual p-8 text-center">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-gradient-saffron rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ApperIcon name="User" className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gradient mb-2">परीक्षा पूर्ण!</h2>
+                <p className="text-gray-600">कृपया अपना नाम दर्ज करें</p>
+              </div>
+
+              <div className="space-y-4">
+                <Input
+                  placeholder="आपका नाम"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="text-center text-lg"
+                  onKeyPress={(e) => e.key === 'Enter' && handleNameSubmit()}
+                />
+                <Button 
+                  onClick={handleNameSubmit}
+                  className="w-full"
+                  disabled={!userName.trim()}
+                >
+                  प्रमाणपत्र देखें
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    )
+  }
+
+  if (quizCompleted) {
+    const { emoji, title, message, percentage } = getCertificateMessage()
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-gold-50 py-8">
+        <div className="max-w-lg mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="card-spiritual p-8 text-center">
-              <div className="mb-8">
-                <div className="w-20 h-20 bg-gradient-saffron rounded-full flex items-center justify-center mx-auto mb-6">
-                  <ApperIcon name="Trophy" className="w-10 h-10 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-gradient mb-4">Quiz Completed!</h2>
-                <p className="text-xl text-gray-600 mb-6">{getScoreMessage()}</p>
+            {/* WhatsApp-style Certificate */}
+            <Card className="relative overflow-hidden bg-gradient-to-br from-white via-gold-50 to-saffron-50 border-2 border-gold-300 shadow-2xl">
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-0 w-32 h-32 opacity-10">
+                <div className="w-full h-full bg-gradient-saffron rounded-full transform -translate-x-16 -translate-y-16"></div>
+              </div>
+              <div className="absolute bottom-0 right-0 w-24 h-24 opacity-10">
+                <div className="w-full h-full bg-gradient-gold rounded-full transform translate-x-12 translate-y-12"></div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="text-center p-4 bg-saffron-50 rounded-lg">
-                  <div className="text-3xl font-bold text-saffron-600 mb-2">{score}</div>
-                  <div className="text-sm text-gray-600">Correct Answers</div>
+              <div className="relative p-8 text-center">
+                {/* Header */}
+                <div className="mb-6">
+                  <div className="text-6xl mb-4">{emoji}</div>
+                  <h1 className="text-2xl font-bold text-gradient mb-2">प्रमाणपत्र</h1>
+                  <div className="w-16 h-1 bg-gradient-saffron mx-auto rounded-full"></div>
                 </div>
-                <div className="text-center p-4 bg-gold-50 rounded-lg">
-                  <div className="text-3xl font-bold text-gold-600 mb-2">
-                    {Math.round((score / questions.length) * 100)}%
+
+                {/* User name */}
+                <div className="mb-6">
+                  <p className="text-gray-600 text-sm mb-2">यह प्रमाणित किया जाता है कि</p>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-2">{userName}</h2>
+                  <p className="text-gray-600 text-sm">ने सफलतापूर्वक पूर्ण किया है</p>
+                </div>
+
+                {/* Title */}
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-gradient mb-4">{title}</h3>
+                  <div className="bg-white bg-opacity-50 backdrop-blur-sm rounded-lg p-4 border border-gold-200">
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="text-center flex-1">
+                        <div className="text-2xl font-bold text-saffron-600">{score}</div>
+                        <div className="text-xs text-gray-600">सही उत्तर</div>
+                      </div>
+                      <div className="text-center flex-1">
+                        <div className="text-2xl font-bold text-gold-600">{Math.round(percentage)}%</div>
+                        <div className="text-xs text-gray-600">सटीकता</div>
+                      </div>
+                      <div className="text-center flex-1">
+                        <div className="text-2xl font-bold text-orange-600">{questions.length}</div>
+                        <div className="text-xs text-gray-600">कुल प्रश्न</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-600">Accuracy</div>
                 </div>
-              </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button onClick={() => window.location.reload()}>
-                  <ApperIcon name="RotateCcw" className="w-4 h-4 mr-2" />
-                  Retake Quiz
-                </Button>
-                <Button variant="secondary" onClick={() => navigate("/quiz")}>
-                  <ApperIcon name="List" className="w-4 h-4 mr-2" />
-                  More Quizzes
-                </Button>
-                <Button 
-                  variant="outline"
-                  onClick={() => {
-                    const text = `I scored ${score}/${questions.length} (${Math.round((score / questions.length) * 100)}%) on the Hindu Culture Quiz at Trishul Tales! Test your knowledge too: ${window.location.origin}/quiz`
-                    navigator.share ? navigator.share({ text }) : navigator.clipboard.writeText(text)
-                    toast.success("Results shared!")
-                  }}
-                >
-                  <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
+                {/* Message */}
+                <div className="mb-8">
+                  <p className="text-sm text-gray-700 leading-relaxed px-2">{message}</p>
+                </div>
+
+                {/* Footer */}
+                <div className="text-center mb-6">
+                  <p className="text-xs text-gray-500">Trishul Tales - Hindu Culture Quiz</p>
+                  <p className="text-xs text-gray-400">{new Date().toLocaleDateString('hi-IN')}</p>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex flex-col gap-3">
+                  <Button 
+                    onClick={() => {
+                      const text = `🏆 ${title}\n\n${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए!\n\n${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n#TrishulTales #HinduCulture #Quiz`
+                      if (navigator.share) {
+                        navigator.share({ 
+                          title: 'Hindu Culture Quiz Certificate', 
+                          text: text
+                        })
+                      } else {
+                        navigator.clipboard.writeText(text)
+                        toast.success("प्रमाणपत्र कॉपी हो गया!")
+                      }
+                    }}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
+                    WhatsApp पर शेयर करें
+                  </Button>
+                  
+                  <div className="flex gap-3">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => window.location.reload()}
+                      className="flex-1"
+                    >
+                      <ApperIcon name="RotateCcw" className="w-4 h-4 mr-2" />
+                      फिर से करें
+                    </Button>
+                    <Button 
+                      variant="secondary" 
+                      onClick={() => navigate("/quiz")}
+                      className="flex-1"
+                    >
+                      <ApperIcon name="List" className="w-4 h-4 mr-2" />
+                      और Quiz
+                    </Button>
+                  </div>
+                </div>
               </div>
             </Card>
           </motion.div>
