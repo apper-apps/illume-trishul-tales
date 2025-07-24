@@ -12,34 +12,22 @@ const QuizListPage = () => {
   const [quizzes, setQuizzes] = useState([])
   const [filteredQuizzes, setFilteredQuizzes] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("all")
+const [error, setError] = useState(null)
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("all")
-  const categories = [
-    { value: "all", label: "All Categories" },
-    { value: "mythology", label: "Mythology" },
-    { value: "festivals", label: "Festivals" },
-    { value: "scriptures", label: "Scriptures" },
-    { value: "traditions", label: "Traditions" },
-    { value: "philosophy", label: "Philosophy" }
+  
+  const ageGroups = [
+    { value: "all", label: "All Age Groups" },
+    { value: "kids", label: "Kids" },
+    { value: "adult", label: "Adult" }
   ]
-
-  const difficulties = [
-    { value: "all", label: "All Levels" },
-    { value: "easy", label: "Easy" },
-    { value: "medium", label: "Medium" },
-    { value: "hard", label: "Hard" }
-]
-
-
   useEffect(() => {
     loadQuizzes()
   }, [])
 
-  useEffect(() => {
+useEffect(() => {
     filterQuizzes()
-  }, [selectedCategory, selectedDifficulty, selectedAgeGroup, quizzes])
+  }, [selectedAgeGroup, quizzes])
+  
   const loadQuizzes = async () => {
     try {
       setLoading(true)
@@ -55,14 +43,6 @@ const QuizListPage = () => {
 
 const filterQuizzes = () => {
     let filtered = quizzes
-
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(quiz => quiz.category === selectedCategory)
-    }
-
-    if (selectedDifficulty !== "all") {
-      filtered = filtered.filter(quiz => quiz.difficulty === selectedDifficulty)
-    }
 
     if (selectedAgeGroup !== "all") {
       filtered = filtered.filter(quiz => quiz.ageGroup === selectedAgeGroup)
@@ -109,76 +89,61 @@ const filterQuizzes = () => {
           </p>
         </motion.div>
 
-        {/* Quick Start */}
+{/* Quick Start */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center mb-12"
+          className="flex justify-center mb-12"
         >
-<Button 
-            size="lg" 
-            onClick={() => window.location.href = "/quiz/random"}
-            className="flex items-center gap-3 shadow-xl"
-          >
-            <ApperIcon name="Zap" className="w-5 h-5" />
-            🕉️ Start Hindu Culture Quiz ✨
-          </Button>
-          <p className="text-sm text-gray-600 mt-2">🌺 Test your knowledge of Hindu traditions and mythology 🌺</p>
+          <div className="text-center">
+            <Button 
+              size="lg" 
+              onClick={() => window.location.href = "/quiz/random"}
+              className="flex items-center gap-3 shadow-xl"
+            >
+              <ApperIcon name="Zap" className="w-5 h-5" />
+              🕉️ Start Hindu Culture Quiz ✨
+            </Button>
+            <p className="text-sm text-gray-600 mt-2">🌺 Test your knowledge of Hindu traditions and mythology 🌺</p>
+          </div>
         </motion.div>
-
-        {/* Filters */}
+{/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mb-8"
         >
-<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="flex items-center gap-2">
-              <ApperIcon name="Filter" className="w-4 h-4 text-gray-600" />
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-2 border-2 border-saffron-200 rounded-lg focus:border-saffron-500 focus:outline-none bg-white"
-              >
-                {categories.map(category => (
-                  <option key={category.value} value={category.value}>
-                    {category.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="flex justify-center">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <ApperIcon name="Users" className="w-4 h-4 text-gray-600" />
+                <select
+                  value={selectedAgeGroup}
+                  onChange={(e) => setSelectedAgeGroup(e.target.value)}
+                  className="px-4 py-2 border-2 border-saffron-200 rounded-lg focus:border-saffron-500 focus:outline-none bg-white"
+                >
+                  {ageGroups.map(ageGroup => (
+                    <option key={ageGroup.value} value={ageGroup.value}>
+                      {ageGroup.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <ApperIcon name="BarChart3" className="w-4 h-4 text-gray-600" />
-              <select
-                value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="px-4 py-2 border-2 border-saffron-200 rounded-lg focus:border-saffron-500 focus:outline-none bg-white"
-              >
-                {difficulties.map(difficulty => (
-                  <option key={difficulty.value} value={difficulty.value}>
-                    {difficulty.label}
-                  </option>
-                ))}
-              </select>
+              {selectedAgeGroup !== "all" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedAgeGroup("all")}
+                  className="flex items-center gap-2"
+                >
+                  <ApperIcon name="X" className="w-4 h-4" />
+                  Clear Filter
+                </Button>
+              )}
             </div>
-
-{(selectedCategory !== "all" || selectedDifficulty !== "all") && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSelectedCategory("all")
-                  setSelectedDifficulty("all")
-                }}
-                className="flex items-center gap-2"
-              >
-                <ApperIcon name="X" className="w-4 h-4" />
-                Clear Filters
-              </Button>
-            )}
           </div>
         </motion.div>
 
@@ -195,15 +160,12 @@ const filterQuizzes = () => {
         </motion.div>
 
         {/* Quiz Grid */}
-        {filteredQuizzes.length === 0 ? (
+{filteredQuizzes.length === 0 ? (
           <Empty
             title="No quizzes found"
-            description="Try adjusting your filters to see more quizzes"
-            actionText="Clear Filters"
-onAction={() => {
-              setSelectedCategory("all")
-              setSelectedDifficulty("all")
-            }}
+            description="Try adjusting your age group filter to see more quizzes"
+            actionText="Clear Filter"
+            onAction={() => setSelectedAgeGroup("all")}
             icon="Search"
           />
         ) : (
