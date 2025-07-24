@@ -42,7 +42,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+<div className="hidden lg:flex items-center space-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -56,7 +56,7 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
-</div>
+          </div>
 
           {/* User section and Mobile menu button */}
           <div className="flex items-center gap-4">
@@ -139,8 +139,9 @@ const Header = () => {
                     </button>
                   </div>
                 )}
-              </div>
+</div>
             </motion.div>
+          )}
         </AnimatePresence>
       </nav>
     </header>
