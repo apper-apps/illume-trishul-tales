@@ -1,5 +1,6 @@
+import { toast } from "react-toastify";
+
 const { ApperClient } = window.ApperSDK;
-import { toast } from 'react-toastify';
 
 class PanchangService {
   constructor() {
