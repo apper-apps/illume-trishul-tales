@@ -1,4 +1,4 @@
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 class ShlokService {
   constructor() {
@@ -62,14 +62,9 @@ async getTodayShlok() {
         }
       };
       
-      console.log(`[ShlokService] Making API call to fetchRecords with params:`, params);
+console.log(`[ShlokService] Making API call to fetchRecords with params:`, params);
       const response = await apperClient.fetchRecords(this.tableName, params);
       console.log(`[ShlokService] API response received:`, response);
-      
-      if (!response || response === null || response === undefined) {
-        console.error("Error fetching today's shlok in shlok service: No response received from server - response is null/undefined");
-        throw new Error("No response received from server - API call returned null/undefined");
-      }
       
       if (!response.success && response.success !== undefined) {
         const errorMsg = response.message || response.error || "API request failed";
@@ -140,12 +135,7 @@ async getById(id) {
       
       console.log(`[ShlokService] Making getRecordById API call for ID ${id} with params:`, params);
       const response = await apperClient.getRecordById(this.tableName, id, params);
-      console.log(`[ShlokService] getRecordById API response for ID ${id}:`, response);
-      
-      if (!response || response === null || response === undefined) {
-        console.error(`Error fetching shlok with ID ${id} in shlok service: No response received from server - response is null/undefined`);
-        throw new Error("No response received from server - API call returned null/undefined");
-      }
+console.log(`[ShlokService] getRecordById API response for ID ${id}:`, response);
       
       if (!response.success && response.success !== undefined) {
         const errorMsg = response.message || response.error || "Failed to fetch shlok";
@@ -207,12 +197,7 @@ async getArchive() {
       
       console.log(`[ShlokService] Making fetchRecords API call for archive with params:`, params);
       const response = await apperClient.fetchRecords(this.tableName, params);
-      console.log(`[ShlokService] Archive API response received:`, response);
-      
-      if (!response || response === null || response === undefined) {
-        console.error("Error fetching shlok archive: No response received from server - response is null/undefined");
-        return [];
-      }
+console.log(`[ShlokService] Archive API response received:`, response);
       
       if (!response.success && response.success !== undefined) {
         const errorMsg = response.message || response.error || "Failed to fetch archive";
@@ -272,12 +257,7 @@ async getByDate(date) {
       
       console.log(`[ShlokService] Making fetchRecords API call for date ${dateStr} with params:`, params);
       const response = await apperClient.fetchRecords(this.tableName, params);
-      console.log(`[ShlokService] Date API response for ${dateStr}:`, response);
-      
-      if (!response || response === null || response === undefined) {
-        console.error("Error fetching shlok by date: No response received from server - response is null/undefined");
-        return null;
-      }
+console.log(`[ShlokService] Date API response for ${dateStr}:`, response);
       
       if (!response.success && response.success !== undefined) {
         const errorMsg = response.message || response.error || "Failed to fetch shlok by date";
@@ -309,4 +289,4 @@ async getByDate(date) {
   }
 }
 
-export const shlokService = new ShlokService()
+export const shlokService = new ShlokService();
