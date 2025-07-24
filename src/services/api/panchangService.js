@@ -40,11 +40,11 @@ class PanchangService {
     }
   }
 
-  async getPanchangByDate(date) {
+async getPanchangByDate(date) {
     try {
       await delay(250);
       const dateStr = date.toISOString().split("T")[0];
-try {
+      
       const { ApperClient } = window.ApperSDK;
       const apperClient = new ApperClient({
         apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
@@ -73,7 +73,11 @@ try {
             "Operator": "EqualTo",
             "Values": [dateStr]
           }
-        ]
+        ],
+        pagingInfo: {
+          limit: 1,
+          offset: 0
+        }
       };
       
       const response = await apperClient.fetchRecords(this.tableName, params);
@@ -84,47 +88,8 @@ try {
         throw new Error(response.message);
       }
       
-const params = {
-        fields: [
-          { "field": { "Name": "Name" } },
-          { "field": { "Name": "date" } },
-          { "field": { "Name": "tithi" } },
-          { "field": { "Name": "nakshatra" } },
-          { "field": { "Name": "yoga" } },
-          { "field": { "Name": "karana" } },
-          { "field": { "Name": "sunrise" } },
-          { "field": { "Name": "sunset" } },
-          { "field": { "Name": "moonrise" } },
-          { "field": { "Name": "moonset" } },
-          { "field": { "Name": "festivals" } },
-          { "field": { "Name": "muhurats" } }
-        ],
-        where: [
-          {
-            "FieldName": "date",
-            "Operator": "EqualTo",
-            "Values": [dateStr]
-          }
-        ],
-        pagingInfo: {
-          limit: 1,
-          offset: 0
-        }
-      };
-    
-      const response = await apperClient.fetchRecords(this.tableName, params);
-    
-      if (!response.success) {
-        const errorMessage = response.message || "Failed to fetch panchang data";
-        console.error("Error fetching panchang in panchang service:", errorMessage);
-        const { toast } = await import('react-toastify');
-        toast.error(errorMessage);
-        return null;
-      }
-    
-if (!response.data || response.data.length === 0) {
-        console.log("No panchang data found for date:", dateStr);
-      } else {
+      // If we found data for the specific date, return it
+      if (response.data && response.data.length > 0) {
         const panchang = response.data[0];
         // Parse festivals and muhurats if they are strings
         return {
@@ -144,6 +109,8 @@ if (!response.data || response.data.length === 0) {
             panchang.muhurats || []
         };
       }
+      
+      console.log("No panchang data found for date:", dateStr);
       
       // If no panchang for the date, get a random one and use it as base
       const randomParams = {
@@ -200,15 +167,6 @@ if (!response.data || response.data.length === 0) {
       // If both queries fail, throw error
       throw new Error("No panchang data available");
       
-    } catch (error) {
-      if (error?.response?.data?.message) {
-        console.error("Error fetching panchang in panchang service:", error?.response?.data?.message);
-      } else {
-        console.error("Error fetching panchang in panchang service:", error.message);
-      }
-      throw error;
-    }
-      return null;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching panchang by date:", error?.response?.data?.message);
