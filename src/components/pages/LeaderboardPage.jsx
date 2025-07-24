@@ -265,7 +265,7 @@ const LeaderboardPage = () => {
                 } catch (error) {
                   console.error('Sharing error:', error)
                   toast.error("Failed to share leaderboard. Please try again.")
-                }
+}
               }}
               className="bg-green-500 hover:bg-green-600 text-white mb-6"
             >
