@@ -48,12 +48,26 @@ class QuizService {
     return newScore
   }
 
-  async getLeaderboard() {
+async getLeaderboard() {
     await delay(200)
     const scores = JSON.parse(localStorage.getItem("quizScores") || "[]")
     return scores
       .sort((a, b) => (b.score / b.totalQuestions) - (a.score / a.totalQuestions))
       .slice(0, 10)
+  }
+
+  async getRealTimeLeaderboard() {
+    // For real-time updates, we'll use the same method but with shorter delay
+    await delay(100)
+    const scores = JSON.parse(localStorage.getItem("quizScores") || "[]")
+    return scores
+      .sort((a, b) => (b.score / b.totalQuestions) - (a.score / a.totalQuestions))
+      .slice(0, 10)
+      .map((score, index) => ({
+        ...score,
+        rank: index + 1,
+        percentage: Math.round((score.score / score.totalQuestions) * 100)
+      }))
   }
 }
 
