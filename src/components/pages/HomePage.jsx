@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { motion } from "framer-motion"
-import HeroSection from "@/components/organisms/HeroSection"
-import QuizCard from "@/components/organisms/QuizCard"
-import ShlokCard from "@/components/organisms/ShlokCard"
-import PanchangCard from "@/components/organisms/PanchangCard"
-import Card from "@/components/atoms/Card"
-import Button from "@/components/atoms/Button"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import ApperIcon from "@/components/ApperIcon"
-import { quizService } from "@/services/api/quizService"
-import { shlokService } from "@/services/api/shlokService"
-import { panchangService } from "@/services/api/panchangService"
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { panchangService } from "@/services/api/panchangService";
+import { shlokService } from "@/services/api/shlokService";
+import { quizService } from "@/services/api/quizService";
+import ApperIcon from "@/components/ApperIcon";
+import QuizCard from "@/components/organisms/QuizCard";
+import ShlokCard from "@/components/organisms/ShlokCard";
+import HeroSection from "@/components/organisms/HeroSection";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 
 const HomePage = () => {
   const [featuredQuizzes, setFeaturedQuizzes] = useState([])
@@ -20,7 +19,6 @@ const HomePage = () => {
   const [todayPanchang, setTodayPanchang] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
   useEffect(() => {
     loadHomeData()
   }, [])
@@ -30,14 +28,14 @@ const HomePage = () => {
       setLoading(true)
       setError(null)
 
-      const [quizzes, shlok, panchang] = await Promise.all([
+const [quizzes, shlok, panchang] = await Promise.all([
         quizService.getFeatured(),
         shlokService.getTodayShlok(),
-        panchangService.getTodayPanchang()
+        panchangService.getToday()
       ])
 
       setFeaturedQuizzes(quizzes)
-setTodayShlok(shlok)
+      setTodayShlok(shlok)
       setTodayPanchang(panchang)
     } catch (err) {
       console.error("Error loading home data:", err);
@@ -132,7 +130,7 @@ setTodayShlok(shlok)
                 </motion.div>
               )}
 
-              {/* Today's Panchang */}
+{/* Today's Panchang */}
               {todayPanchang && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -140,7 +138,26 @@ setTodayShlok(shlok)
                   transition={{ duration: 0.6, delay: 0.4 }}
                   viewport={{ once: true }}
                 >
-                  <PanchangCard panchang={todayPanchang} />
+                  <Card className="card-spiritual p-6">
+                    <h3 className="text-lg font-bold text-gradient mb-4 flex items-center gap-2">
+                      <ApperIcon name="Calendar" className="w-5 h-5" />
+                      Today's Panchang
+                    </h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Tithi:</span>
+                        <span className="font-medium">{todayPanchang.tithi}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Nakshatra:</span>
+                        <span className="font-medium">{todayPanchang.nakshatra}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Yoga:</span>
+                        <span className="font-medium">{todayPanchang.yoga}</span>
+                      </div>
+                    </div>
+                  </Card>
                 </motion.div>
               )}
             </div>
