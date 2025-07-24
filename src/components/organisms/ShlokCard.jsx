@@ -6,6 +6,10 @@ import Button from "@/components/atoms/Button";
 import LotusDecoration from "@/components/molecules/LotusDecoration";
 
 const ShlokCard = ({ shlok }) => {
+  if (!shlok) {
+    return null;
+  }
+  
   const [copied, setCopied] = useState(false)
   const [showImageShare, setShowImageShare] = useState(false)
   const [customName, setCustomName] = useState("")
@@ -155,8 +159,8 @@ const generateShlokImage = async () => {
         canvas.toBlob(async (blob) => {
           try {
             // Check if File constructor exists and Web Share API supports files
-            if (typeof File !== 'undefined' && navigator.share && navigator.canShare) {
-              const file = new File([blob], 'shlok.png', { type: 'image/png' })
+            if (typeof window !== 'undefined' && window.File && navigator.share && navigator.canShare) {
+              const file = new window.File([blob], 'shlok.png', { type: 'image/png' })
               const canShareFiles = await navigator.canShare({ files: [file] })
               
               if (canShareFiles) {
@@ -169,7 +173,6 @@ const generateShlokImage = async () => {
                 return
               }
             }
-            
             // Fallback to download
             const link = document.createElement('a')
             link.download = `shlok-${Date.now()}.png`
@@ -193,20 +196,34 @@ const generateShlokImage = async () => {
     }
   }
 
-  const handleShare = (platform) => {
-    const text = `${shlok.sanskrit}\n\n${shlok.hindi}\n\n${shlok.english}\n\n- ${shlok.source}${customName.trim() ? `\n\nShared by: ${customName.trim()}` : ''}\n\nFrom Trishul Tales`
+const handleShare = (platform) => {
     const url = window.location.href
-    
+    let text = ""
     let shareUrl = ""
     
     switch (platform) {
       case "whatsapp":
-        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + "\n" + url)}`
+        // Special format for WhatsApp to match the desired output
+        text = `${shlok.sanskrit}
+
+${shlok.hindi}
+
+${shlok.english}
+
+- ${shlok.source}${customName.trim() ? `
+
+Shared by: ${customName.trim()}` : ''}
+
+From Trishul Tales
+${url}`
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(text)}`
         break
       case "twitter":
+        text = `${shlok.sanskrit}\n\n${shlok.hindi}\n\n${shlok.english}\n\n- ${shlok.source}${customName.trim() ? `\n\nShared by: ${customName.trim()}` : ''}\n\nFrom Trishul Tales`
         shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`
         break
       case "facebook":
+        text = `${shlok.sanskrit}\n\n${shlok.hindi}\n\n${shlok.english}\n\n- ${shlok.source}${customName.trim() ? `\n\nShared by: ${customName.trim()}` : ''}\n\nFrom Trishul Tales`
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`
         break
       default:
