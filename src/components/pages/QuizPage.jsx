@@ -322,16 +322,37 @@ const getCertificateMessage = () => {
                 {/* Action buttons */}
                 <div className="flex flex-col gap-3">
                   <Button 
-                    onClick={() => {
+onClick={async () => {
                       const text = `🏆 ${title}\n\n${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए!\n\n${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n#TrishulTales #HinduCulture #Quiz`
+                      
+                      // Try Web Share API first
                       if (navigator.share) {
-                        navigator.share({ 
-                          title: 'Hindu Culture Quiz Certificate', 
-                          text: text
-                        })
+                        try {
+                          await navigator.share({ 
+                            title: 'Hindu Culture Quiz Certificate', 
+                            text: text
+                          })
+                          toast.success("प्रमाणपत्र शेयर हो गया!")
+                        } catch (error) {
+                          console.log('Share failed, falling back to clipboard:', error)
+                          // Fall back to clipboard if share fails
+                          try {
+                            await navigator.clipboard.writeText(text)
+                            toast.success("प्रमाणपत्र कॉपी हो गया! अब WhatsApp में paste करें")
+                          } catch (clipboardError) {
+                            console.error('Clipboard failed:', clipboardError)
+                            toast.error("कॉपी नहीं हो सका। कृपया टेक्स्ट मैन्युअल रूप से कॉपी करें")
+                          }
+                        }
                       } else {
-                        navigator.clipboard.writeText(text)
-                        toast.success("प्रमाणपत्र कॉपी हो गया!")
+                        // No share API, try clipboard directly
+                        try {
+                          await navigator.clipboard.writeText(text)
+                          toast.success("प्रमाणपत्र कॉपी हो गया! अब WhatsApp में paste करें")
+                        } catch (error) {
+                          console.error('Clipboard not available:', error)
+                          toast.error("कॉपी नहीं हो सका। कृपया टेक्स्ट मैन्युअल रूप से कॉपी करें")
+                        }
                       }
                     }}
                     className="bg-green-500 hover:bg-green-600 text-white"
@@ -339,7 +360,6 @@ const getCertificateMessage = () => {
                     <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
                     WhatsApp पर शेयर करें
                   </Button>
-                  
                   <div className="flex gap-3">
                     <Button 
                       variant="outline" 
