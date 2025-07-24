@@ -108,9 +108,9 @@ class PanchangService {
   }
 
 async getToday() {
-    const { toast } = await import('react-toastify');
-    
     try {
+      // Import toast for notifications
+      const { toast } = await import('react-toastify');
       const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
       
       const params = {
