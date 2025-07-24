@@ -52,26 +52,34 @@ class PanchangService {
       });
       
       const params = {
-        fields: this.fields,
-        where: [
-          {
-            "FieldName": "date",
-            "Operator": "EqualTo",
-            "Values": [dateStr]
-          }
-        ],
-        pagingInfo: {
-          limit: 1,
-          offset: 0
+fields: this.fields,
+      where: [
+        {
+          "FieldName": "date",
+          "Operator": "EqualTo",
+          "Values": [dateStr]
         }
-      };
-      
-      const response = await apperClient.fetchRecords(this.tableName, params);
-      
-      if (!response.success) {
-        console.error("Error fetching panchang:", response.message);
-        return null;
+      ],
+      pagingInfo: {
+        limit: 1,
+        offset: 0
       }
+    };
+    
+    const response = await apperClient.fetchRecords(this.tableName, params);
+    
+    if (!response.success) {
+      const errorMessage = response.message || "Failed to fetch panchang data";
+      console.error("Error fetching panchang in panchang service:", errorMessage);
+      const { toast } = await import('react-toastify');
+      toast.error(errorMessage);
+      return null;
+    }
+    
+    if (!response.data || response.data.length === 0) {
+      console.log("No panchang data found for date:", dateStr);
+      return null;
+    }
       
       if (response.data && response.data.length > 0) {
         const panchang = response.data[0];
