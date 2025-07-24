@@ -183,11 +183,11 @@ const LeaderboardPage = () => {
                           />
                         </div>
                       </div>
-                    )}
+)}
                   </Card>
                 </motion.div>
               ))}
-</AnimatePresence>
+            </AnimatePresence>
           </motion.div>
         )}
 
