@@ -167,7 +167,7 @@ const handleSubmitQuiz = async () => {
     setShowNameModal(true)
   }
 
-  const handleNameSubmit = async () => {
+const handleNameSubmit = async () => {
     if (!userName.trim()) {
       toast.error("कृपया अपना नाम दर्ज करें")
       return
@@ -175,7 +175,6 @@ const handleSubmitQuiz = async () => {
 
     setShowNameModal(false)
     setQuizCompleted(true)
-setQuizCompleted(true)
 
     // Save score
     try {
@@ -190,6 +189,7 @@ setQuizCompleted(true)
       console.error("Failed to save score:", err)
     }
     toast.success(`Quiz completed! You scored ${score}/${questions.length}`)
+  }
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)
@@ -197,7 +197,7 @@ setQuizCompleted(true)
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-const getCertificateMessage = () => {
+  const getCertificateMessage = () => {
     const percentage = (score / questions.length) * 100
     let emoji, title, message
 
@@ -217,7 +217,7 @@ const getCertificateMessage = () => {
       emoji = '🙏'
       title = 'आरंभिक साधक!'
       message = 'हर यात्रा की शुरुआत एक छोटे कदम से होती है। शास्त्रों को पढ़ते रहें, सीखते रहें और इस ज्ञान यात्रा में आगे बढ़ें। इसे अपने प्रियजनों संग शेयर करें ताकि वे भी इस मार्ग पर चलें।'
-}
+    }
 
     return { emoji, title, message, percentage }
   }
@@ -695,7 +695,7 @@ const getCertificateMessage = () => {
               <ApperIcon name="ChevronRight" className="w-4 h-4" />
             </Button>
           )}
-        </div>
+</div>
       </div>
     </div>
   )
