@@ -6,14 +6,14 @@ import Button from "@/components/atoms/Button";
 import LotusDecoration from "@/components/molecules/LotusDecoration";
 
 const ShlokCard = ({ shlok }) => {
-  if (!shlok) {
-    return null;
-  }
-  
   const [copied, setCopied] = useState(false)
   const [showImageShare, setShowImageShare] = useState(false)
   const [customName, setCustomName] = useState("")
   const [isGeneratingImage, setIsGeneratingImage] = useState(false)
+  
+  if (!shlok) {
+    return null;
+  }
   const handleCopy = async () => {
     const textToCopy = `${shlok.sanskrit}\n\n${shlok.hindi}\n\n${shlok.english}\n\n- ${shlok.source}`
     
