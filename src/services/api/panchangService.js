@@ -44,12 +44,45 @@ class PanchangService {
     try {
       await delay(250);
       const dateStr = date.toISOString().split("T")[0];
-      
+try {
       const { ApperClient } = window.ApperSDK;
       const apperClient = new ApperClient({
         apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
+      
+      // Query for specific date first
+      const params = {
+        fields: [
+          { "field": { "Name": "Name" } },
+          { "field": { "Name": "date" } },
+          { "field": { "Name": "tithi" } },
+          { "field": { "Name": "nakshatra" } },
+          { "field": { "Name": "yoga" } },
+          { "field": { "Name": "karana" } },
+          { "field": { "Name": "sunrise" } },
+          { "field": { "Name": "sunset" } },
+          { "field": { "Name": "moonrise" } },
+          { "field": { "Name": "moonset" } },
+          { "field": { "Name": "festivals" } },
+          { "field": { "Name": "muhurats" } }
+        ],
+        where: [
+          {
+            "FieldName": "date",
+            "Operator": "EqualTo",
+            "Values": [dateStr]
+          }
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords(this.tableName, params);
+      
+      // Handle response error
+      if (!response.success) {
+        console.error("Error fetching panchang in panchang service:", response.message);
+        throw new Error(response.message);
+      }
       
 const params = {
         fields: [
@@ -89,7 +122,7 @@ const params = {
         return null;
       }
     
-      if (!response.data || response.data.length === 0) {
+if (!response.data || response.data.length === 0) {
         console.log("No panchang data found for date:", dateStr);
       } else {
         const panchang = response.data[0];
@@ -113,7 +146,7 @@ const params = {
       }
       
       // If no panchang for the date, get a random one and use it as base
-const randomParams = {
+      const randomParams = {
         fields: [
           { "field": { "Name": "Name" } },
           { "field": { "Name": "date" } },
@@ -136,7 +169,13 @@ const randomParams = {
       
       const randomResponse = await apperClient.fetchRecords(this.tableName, randomParams);
       
-      if (randomResponse.success && randomResponse.data && randomResponse.data.length > 0) {
+      // Handle random response error
+      if (!randomResponse.success) {
+        console.error("Error fetching fallback panchang in panchang service:", randomResponse.message);
+        throw new Error(randomResponse.message);
+      }
+      
+      if (randomResponse.data && randomResponse.data.length > 0) {
         const basePanchang = randomResponse.data[0];
         return {
           ...basePanchang,
@@ -158,6 +197,17 @@ const randomParams = {
         };
       }
       
+      // If both queries fail, throw error
+      throw new Error("No panchang data available");
+      
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching panchang in panchang service:", error?.response?.data?.message);
+      } else {
+        console.error("Error fetching panchang in panchang service:", error.message);
+      }
+      throw error;
+    }
       return null;
     } catch (error) {
       if (error?.response?.data?.message) {
