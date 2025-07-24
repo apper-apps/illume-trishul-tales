@@ -15,7 +15,7 @@ const QuizListPage = () => {
   const [error, setError] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedDifficulty, setSelectedDifficulty] = useState("all")
-
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("all")
   const categories = [
     { value: "all", label: "All Categories" },
     { value: "mythology", label: "Mythology" },
@@ -30,6 +30,12 @@ const QuizListPage = () => {
     { value: "easy", label: "Easy" },
     { value: "medium", label: "Medium" },
     { value: "hard", label: "Hard" }
+]
+
+  const ageGroups = [
+    { value: "all", label: "All Ages" },
+    { value: "kids", label: "Kids (5-15)" },
+    { value: "adults", label: "Adults (16+)" }
   ]
 
   useEffect(() => {
@@ -38,8 +44,7 @@ const QuizListPage = () => {
 
   useEffect(() => {
     filterQuizzes()
-  }, [selectedCategory, selectedDifficulty, quizzes])
-
+  }, [selectedCategory, selectedDifficulty, selectedAgeGroup, quizzes])
   const loadQuizzes = async () => {
     try {
       setLoading(true)
@@ -53,7 +58,7 @@ const QuizListPage = () => {
     }
   }
 
-  const filterQuizzes = () => {
+const filterQuizzes = () => {
     let filtered = quizzes
 
     if (selectedCategory !== "all") {
@@ -62,6 +67,10 @@ const QuizListPage = () => {
 
     if (selectedDifficulty !== "all") {
       filtered = filtered.filter(quiz => quiz.difficulty === selectedDifficulty)
+    }
+
+    if (selectedAgeGroup !== "all") {
+      filtered = filtered.filter(quiz => quiz.ageGroup === selectedAgeGroup)
     }
 
     setFilteredQuizzes(filtered)
@@ -130,7 +139,7 @@ const QuizListPage = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mb-8"
         >
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <div className="flex items-center gap-2">
               <ApperIcon name="Filter" className="w-4 h-4 text-gray-600" />
               <select
@@ -161,13 +170,28 @@ const QuizListPage = () => {
               </select>
             </div>
 
-            {(selectedCategory !== "all" || selectedDifficulty !== "all") && (
+            <div className="flex items-center gap-2">
+              <ApperIcon name="Users" className="w-4 h-4 text-gray-600" />
+              <select
+                value={selectedAgeGroup}
+                onChange={(e) => setSelectedAgeGroup(e.target.value)}
+                className="px-4 py-2 border-2 border-saffron-200 rounded-lg focus:border-saffron-500 focus:outline-none bg-white"
+              >
+                {ageGroups.map(ageGroup => (
+                  <option key={ageGroup.value} value={ageGroup.value}>
+                    {ageGroup.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+{(selectedCategory !== "all" || selectedDifficulty !== "all" || selectedAgeGroup !== "all") && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
                   setSelectedCategory("all")
                   setSelectedDifficulty("all")
+                  setSelectedAgeGroup("all")
                 }}
                 className="flex items-center gap-2"
               >
@@ -196,9 +220,10 @@ const QuizListPage = () => {
             title="No quizzes found"
             description="Try adjusting your filters to see more quizzes"
             actionText="Clear Filters"
-            onAction={() => {
+onAction={() => {
               setSelectedCategory("all")
               setSelectedDifficulty("all")
+              setSelectedAgeGroup("all")
             }}
             icon="Search"
           />

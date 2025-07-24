@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
-import { toast } from "react-toastify"
-import Button from "@/components/atoms/Button"
-import Card from "@/components/atoms/Card"
-import Input from "@/components/atoms/Input"
-import QuizOption from "@/components/molecules/QuizOption"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import ApperIcon from "@/components/ApperIcon"
-import { quizService } from "@/services/api/quizService"
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { quizService } from "@/services/api/quizService";
+import ApperIcon from "@/components/ApperIcon";
+import Card from "@/components/atoms/Card";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import QuizOption from "@/components/molecules/QuizOption";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 
 const QuizPage = () => {
   const { quizId } = useParams()
   const navigate = useNavigate()
   
-const [quiz, setQuiz] = useState(null)
+  const [quiz, setQuiz] = useState(null)
   const [questions, setQuestions] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
@@ -28,12 +28,13 @@ const [quiz, setQuiz] = useState(null)
   const [quizCompleted, setQuizCompleted] = useState(false)
   const [showNameModal, setShowNameModal] = useState(false)
   const [userName, setUserName] = useState("")
-
-  useEffect(() => {
+  const [showAgeSelection, setShowAgeSelection] = useState(false)
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState(null)
+useEffect(() => {
     if (quizId) {
-      loadQuiz()
+      setShowAgeSelection(true)
     } else {
-      loadRandomQuiz()
+      setShowAgeSelection(true)
     }
   }, [quizId])
 
@@ -72,21 +73,53 @@ const [quiz, setQuiz] = useState(null)
     }
   }
 
-  const loadRandomQuiz = async () => {
+const loadRandomQuiz = async (ageGroup) => {
     try {
       setLoading(true)
       setError(null)
 
-      const questionsData = await quizService.getRandomQuestions(20)
+      const questionsData = await quizService.getRandomQuestions(20, ageGroup)
       
       setQuestions(questionsData)
       setQuiz({
-        title: "Hindu Mythology Quiz",
-        description: "Test your knowledge of Hindu traditions and mythology",
-        duration: 20,
-        questionCount: questionsData.length
+        title: `Hindu Mythology Quiz - ${ageGroup === 'kids' ? 'Kids' : 'Adults'}`,
+        description: `Test your knowledge of Hindu traditions and mythology (${ageGroup === 'kids' ? 'Ages 5-15' : 'Adults'})`,
+        duration: ageGroup === 'kids' ? 15 : 20,
+        questionCount: questionsData.length,
+        ageGroup: ageGroup
       })
-      setTimeLeft(20 * 60) // 20 minutes
+      setTimeLeft((ageGroup === 'kids' ? 15 : 20) * 60)
+    } catch (err) {
+      setError("Failed to load quiz. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAgeSelection = (ageGroup) => {
+    setSelectedAgeGroup(ageGroup)
+    setShowAgeSelection(false)
+    
+    if (quizId) {
+      loadQuizWithAge(ageGroup)
+    } else {
+      loadRandomQuiz(ageGroup)
+    }
+  }
+
+  const loadQuizWithAge = async (ageGroup) => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const [quizData, questionsData] = await Promise.all([
+        quizService.getById(parseInt(quizId)),
+        quizService.getQuestionsByAge(parseInt(quizId), ageGroup)
+      ])
+
+      setQuiz({...quizData, ageGroup})
+      setQuestions(questionsData)
+      setTimeLeft(quizData.duration * 60)
     } catch (err) {
       setError("Failed to load quiz. Please try again.")
     } finally {
@@ -144,17 +177,17 @@ const handleSubmitQuiz = async () => {
     setQuizCompleted(true)
 
     // Save score
-    try {
+try {
       await quizService.saveScore({
         userName: userName.trim(),
         score: score,
         totalQuestions: questions.length,
-        category: quiz?.category || "General"
+        category: quiz?.category || "General",
+        ageGroup: selectedAgeGroup || "General"
       })
     } catch (err) {
       console.error("Failed to save score:", err)
     }
-
     toast.success(`Quiz completed! You scored ${score}/${questions.length}`)
   }
 
@@ -184,9 +217,69 @@ const getCertificateMessage = () => {
       emoji = '🙏'
       title = 'आरंभिक साधक!'
       message = 'हर यात्रा की शुरुआत एक छोटे कदम से होती है। शास्त्रों को पढ़ते रहें, सीखते रहें और इस ज्ञान यात्रा में आगे बढ़ें। इसे अपने प्रियजनों संग शेयर करें ताकि वे भी इस मार्ग पर चलें।'
-    }
+}
 
     return { emoji, title, message, percentage }
+  }
+
+  // Age selection screen
+  if (showAgeSelection) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-gold-50 py-8">
+        <div className="max-w-md mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="card-spiritual p-8 text-center">
+              <div className="mb-6">
+                <div className="w-16 h-16 bg-gradient-saffron rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ApperIcon name="Users" className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gradient mb-2">Select Age Group</h2>
+                <p className="text-gray-600">Choose your age group for appropriate questions</p>
+              </div>
+
+              <div className="space-y-4">
+                <Button 
+                  onClick={() => handleAgeSelection('kids')}
+                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600"
+                >
+                  <ApperIcon name="Baby" className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">Kids (Ages 5-15)</div>
+                    <div className="text-xs opacity-90">Fun and simple questions</div>
+                  </div>
+                </Button>
+                
+                <Button 
+                  onClick={() => handleAgeSelection('adults')}
+                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-saffron-500 to-orange-500 hover:from-saffron-600 hover:to-orange-600"
+                >
+                  <ApperIcon name="GraduationCap" className="w-5 h-5" />
+                  <div className="text-left">
+                    <div className="font-semibold">Adults (16+)</div>
+                    <div className="text-xs opacity-90">Advanced questions</div>
+                  </div>
+                </Button>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-gray-200">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/quiz')}
+                  className="text-gray-600"
+                >
+                  <ApperIcon name="ArrowLeft" className="w-4 h-4 mr-2" />
+                  Back to Quiz List
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+)
   }
 
   if (loading) {
@@ -198,7 +291,6 @@ const getCertificateMessage = () => {
       </div>
     )
   }
-
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-gold-50 py-8">

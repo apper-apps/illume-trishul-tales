@@ -6,25 +6,28 @@
     "options": ["Brahma", "Vishnu", "Shiva", "Indra"],
     "correctAnswer": 1,
     "category": "mythology",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
-  {
+{
     "Id": 2,
     "quizId": 1,
     "question": "Which weapon is associated with Lord Shiva?",
     "options": ["Bow and Arrow", "Trident (Trishul)", "Discus (Chakra)", "Mace (Gada)"],
     "correctAnswer": 1,
     "category": "mythology",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
-  {
+{
     "Id": 3,
     "quizId": 1,
     "question": "Who is the monkey devotee of Lord Rama?",
     "options": ["Hanuman", "Sugriva", "Angada", "Jambavan"],
     "correctAnswer": 0,
     "category": "mythology",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
   {
     "Id": 4,
@@ -33,7 +36,8 @@
     "options": ["Bhima", "Krishna", "Yudhishira", "Nakula"],
     "correctAnswer": 1,
     "category": "mythology",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
   {
     "Id": 5,
@@ -42,43 +46,48 @@
     "options": ["Lakshmi", "Durga", "Saraswati", "Parvati"],
     "correctAnswer": 2,
     "category": "mythology",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
-  {
+{
     "Id": 6,
     "quizId": 2,
     "question": "Which festival is known as the Festival of Lights?",
     "options": ["Holi", "Diwali", "Dussehra", "Karva Chauth"],
     "correctAnswer": 1,
     "category": "festivals",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
   {
     "Id": 7,
-    "quizId": 2,
+    "quizId": 0,
     "question": "Holi celebrates the victory of good over evil. Which demon king was defeated?",
     "options": ["Ravana", "Hiranyakashipu", "Mahishasura", "Narakasura"],
     "correctAnswer": 1,
     "category": "festivals",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
   {
     "Id": 8,
-    "quizId": 2,
+    "quizId": 0,
     "question": "During which festival do people fast for the long life of their husbands?",
     "options": ["Teej", "Karva Chauth", "Navratri", "Janmashtami"],
     "correctAnswer": 1,
     "category": "festivals",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
-  {
+{
     "Id": 9,
     "quizId": 3,
     "question": "How many Vedas are there in Hindu scriptures?",
     "options": ["Two", "Three", "Four", "Five"],
     "correctAnswer": 2,
     "category": "scriptures",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
   {
     "Id": 10,
@@ -87,7 +96,8 @@
     "options": ["Sama Veda", "Yajur Veda", "Atharva Veda", "Rig Veda"],
     "correctAnswer": 3,
     "category": "scriptures",
-    "difficulty": "hard"
+    "difficulty": "hard",
+    "ageGroup": "adults"
   },
   {
     "Id": 11,
@@ -96,7 +106,8 @@
     "options": ["Two", "Three", "Four", "Five"],
     "correctAnswer": 1,
     "category": "philosophy",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
   {
     "Id": 12,
@@ -105,16 +116,18 @@
     "options": ["Duty", "Liberation", "Knowledge", "Devotion"],
     "correctAnswer": 1,
     "category": "philosophy",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
-  {
+{
     "Id": 13,
     "quizId": 0,
     "question": "Which river is considered the most sacred in Hinduism?",
     "options": ["Yamuna", "Narmada", "Ganga", "Godavari"],
     "correctAnswer": 2,
     "category": "traditions",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
   {
     "Id": 14,
@@ -123,7 +136,8 @@
     "options": ["Karma", "Dharma", "Rita", "Moksha"],
     "correctAnswer": 2,
     "category": "philosophy",
-    "difficulty": "hard"
+    "difficulty": "hard",
+    "ageGroup": "adults"
   },
   {
     "Id": 15,
@@ -132,7 +146,8 @@
     "options": ["Ravana", "Hiranyakashipu", "Mahishasura", "Kumbhakarna"],
     "correctAnswer": 2,
     "category": "mythology",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
   {
     "Id": 16,
@@ -141,7 +156,8 @@
     "options": ["Shravan", "Bhadrapada", "Ashwin", "Kartik"],
     "correctAnswer": 1,
     "category": "festivals",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
   {
     "Id": 17,
@@ -150,7 +166,8 @@
     "options": ["Upanayana", "Mundan", "Annaprashan", "Vidyarambha"],
     "correctAnswer": 0,
     "category": "traditions",
-    "difficulty": "medium"
+    "difficulty": "medium",
+    "ageGroup": "adults"
   },
   {
     "Id": 18,
@@ -159,7 +176,8 @@
     "options": ["Isha Upanishad", "Katha Upanishad", "Chandogya Upanishad", "Mundaka Upanishad"],
     "correctAnswer": 2,
     "category": "scriptures",
-    "difficulty": "hard"
+    "difficulty": "hard",
+    "ageGroup": "adults"
   },
   {
     "Id": 19,
@@ -168,7 +186,8 @@
     "options": ["Vyasa", "Valmiki", "Kalidasa", "Tulsidas"],
     "correctAnswer": 1,
     "category": "scriptures",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   },
   {
     "Id": 20,
@@ -177,6 +196,7 @@
     "options": ["Lion", "Mouse", "Peacock", "Bull"],
     "correctAnswer": 1,
     "category": "mythology",
-    "difficulty": "easy"
+    "difficulty": "easy",
+    "ageGroup": "kids"
   }
 ]

@@ -1,27 +1,29 @@
 [
   {
     "Id": 1,
-    "title": "Hindu Mythology Essentials",
-    "description": "Test your knowledge of Hindu gods, goddesses, and epic stories from Ramayana and Mahabharata",
+    "title": "Hindu Mythology for Kids",
+    "description": "Fun stories of Hindu gods, goddesses, and epic tales from Ramayana and Mahabharata for young learners",
     "category": "mythology",
     "difficulty": "easy",
     "questionCount": 15,
     "duration": 12,
     "icon": "Crown",
-    "featured": true
+    "featured": true,
+    "ageGroup": "kids"
   },
-  {
+{
     "Id": 2,
-    "title": "Festivals and Celebrations",
-    "description": "Explore the significance and traditions of major Hindu festivals celebrated across India",
+    "title": "Hindu Festivals for Kids",
+    "description": "Learn about colorful Hindu festivals and celebrations in a fun way",
     "category": "festivals",
-    "difficulty": "medium",
-    "questionCount": 20,
-    "duration": 15,
+    "difficulty": "easy",
+    "questionCount": 12,
+    "duration": 10,
     "icon": "Sparkles",
-    "featured": true
+    "featured": true,
+    "ageGroup": "kids"
   },
-  {
+{
     "Id": 3,
     "title": "Sacred Scriptures",
     "description": "Dive deep into the wisdom of Vedas, Upanishads, Puranas, and other holy texts",
@@ -30,7 +32,8 @@
     "questionCount": 25,
     "duration": 20,
     "icon": "BookOpen",
-    "featured": true
+    "featured": true,
+    "ageGroup": "adults"
   },
   {
     "Id": 4,
@@ -41,18 +44,20 @@
     "questionCount": 18,
     "duration": 14,
     "icon": "Heart",
-    "featured": true
+    "featured": true,
+    "ageGroup": "adults"
   },
-  {
+{
     "Id": 5,
     "title": "Hindu Traditions and Rituals",
     "description": "Understanding the meaning behind various Hindu customs and ritual practices",
     "category": "traditions",
-    "difficulty": "easy",
+    "difficulty": "medium",
     "questionCount": 16,
     "duration": 12,
     "icon": "Flame",
-    "featured": false
+    "featured": false,
+    "ageGroup": "adults"
   },
   {
     "Id": 6,
@@ -63,6 +68,7 @@
     "questionCount": 30,
     "duration": 25,
     "icon": "Zap",
-    "featured": false
+    "featured": false,
+    "ageGroup": "adults"
   }
 ]

@@ -15,11 +15,9 @@ const navigation = [
     { name: "Leaderboard", href: "/leaderboard" },
     { name: "Panchang", href: "/panchang" },
     { name: "Daily Shlok", href: "/shlok" },
-    { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" }
   ]
-
   const isActive = (path) => {
     if (path === "/" && location.pathname === "/") return true
     return path !== "/" && location.pathname.startsWith(path)

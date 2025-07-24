@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { toast } from "react-toastify"
-import Card from "@/components/atoms/Card"
-import Button from "@/components/atoms/Button"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import Empty from "@/components/ui/Empty"
-import ApperIcon from "@/components/ApperIcon"
-import { quizService } from "@/services/api/quizService"
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { quizService } from "@/services/api/quizService";
+import ApperIcon from "@/components/ApperIcon";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
 
 const LeaderboardPage = () => {
   const [leaderboard, setLeaderboard] = useState([])
@@ -237,6 +237,63 @@ const LeaderboardPage = () => {
             </AnimatePresence>
           </motion.div>
         )}
+{/* Share Leaderboard */}
+        {leaderboard.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="mt-8 text-center"
+          >
+            <Button 
+              onClick={async () => {
+                const top10 = leaderboard.slice(0, 10)
+                let leaderboardText = "🏆 Hindu Culture Quiz Leaderboard - Top 10 🏆\n\n"
+                
+                top10.forEach((entry, index) => {
+                  const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
+                  leaderboardText += `${medal} ${entry.userName} - ${entry.percentage}% (${entry.score}/${entry.totalQuestions})\n`
+                })
+                
+                leaderboardText += `\n🔗 Take the quiz yourself: ${window.location.origin}/quiz\n\n🕉️ Trishul Tales - Hindu Culture Quiz\nExplore the wisdom of Hindu traditions and mythology!`
+                
+                // Try Web Share API first
+                if (navigator.share) {
+                  try {
+                    await navigator.share({ 
+                      title: 'Hindu Culture Quiz Leaderboard', 
+                      text: leaderboardText
+                    })
+                    toast.success("Leaderboard shared successfully!")
+                  } catch (error) {
+                    console.log('Share failed, falling back to clipboard:', error)
+                    // Fall back to clipboard if share fails
+                    try {
+                      await navigator.clipboard.writeText(leaderboardText)
+                      toast.success("Leaderboard copied! Now paste it on WhatsApp")
+                    } catch (clipboardError) {
+                      console.error('Clipboard failed:', clipboardError)
+                      toast.error("Could not copy. Please copy the text manually")
+                    }
+                  }
+                } else {
+                  // No share API, try clipboard directly
+                  try {
+                    await navigator.clipboard.writeText(leaderboardText)
+                    toast.success("Leaderboard copied! Now paste it on WhatsApp")
+                  } catch (error) {
+                    console.error('Clipboard not available:', error)
+                    toast.error("Could not copy. Please copy the text manually")
+                  }
+                }
+              }}
+              className="bg-green-500 hover:bg-green-600 text-white mb-6"
+            >
+              <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
+              Share Top 10 on WhatsApp
+            </Button>
+          </motion.div>
+        )}
 
         {/* Action buttons */}
         <motion.div
@@ -257,7 +314,7 @@ const LeaderboardPage = () => {
             <ApperIcon name="RefreshCw" className="w-4 h-4 mr-2" />
             Refresh
           </Button>
-        </motion.div>
+</motion.div>
       </div>
     </div>
   )

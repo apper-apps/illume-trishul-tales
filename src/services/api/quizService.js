@@ -27,16 +27,33 @@ class QuizService {
     await delay(400)
     const questions = questionData.filter(q => q.quizId === quizId)
     return questions.map(q => ({ ...q }))
-  }
-
-  async getRandomQuestions(count = 20) {
-    await delay(500)
-    const shuffled = [...questionData].sort(() => 0.5 - Math.random())
-    return shuffled.slice(0, count).map(q => ({ ...q }))
 }
 
+  async getRandomQuestions(count = 20, ageGroup = null) {
+    await delay(500)
+    let questions = [...questionData]
+    
+    if (ageGroup) {
+      questions = questions.filter(q => q.ageGroup === ageGroup)
+    }
+    
+    const shuffled = questions.sort(() => 0.5 - Math.random())
+    return shuffled.slice(0, count).map(q => ({ ...q }))
+  }
+
+  async getQuestionsByAge(quizId, ageGroup) {
+    await delay(400)
+    let questions = questionData.filter(q => q.quizId === quizId)
+    
+    if (ageGroup) {
+      questions = questions.filter(q => q.ageGroup === ageGroup)
+    }
+    
+    return questions.map(q => ({ ...q }))
+  }
+
   async saveScore(scoreData) {
-    await delay(300)
+await delay(300)
     const scores = JSON.parse(localStorage.getItem("quizScores") || "[]")
     const newScore = {
       Id: scores.length + 1,
@@ -44,13 +61,13 @@ class QuizService {
       score: scoreData.score,
       totalQuestions: scoreData.totalQuestions,
       category: scoreData.category || "General",
+      ageGroup: scoreData.ageGroup || "General",
       completedAt: new Date().toISOString()
     }
     scores.push(newScore)
     localStorage.setItem("quizScores", JSON.stringify(scores))
     return newScore
   }
-
 async getLeaderboard() {
     await delay(200)
     const scores = JSON.parse(localStorage.getItem("quizScores") || "[]")
