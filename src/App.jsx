@@ -7,7 +7,6 @@ import { ToastContainer } from "react-toastify";
 import HomePage from "@/components/pages/HomePage";
 import QuizPage from "@/components/pages/QuizPage";
 import ContactPage from "@/components/pages/ContactPage";
-import PanchangPage from "@/components/pages/PanchangPage";
 import AboutPage from "@/components/pages/AboutPage";
 import QuizListPage from "@/components/pages/QuizListPage";
 import ShlokPage from "@/components/pages/ShlokPage";
@@ -359,15 +358,6 @@ function AppContent() {
             <Header />
             <main className="flex-1">
               <ShlokPage />
-            </main>
-            <Footer />
-          </div>
-        } />
-        <Route path="/panchang" element={
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              <PanchangPage />
             </main>
             <Footer />
           </div>

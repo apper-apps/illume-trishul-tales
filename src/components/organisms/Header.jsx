@@ -14,11 +14,10 @@ const Header = () => {
   const isAuthenticated = userState?.isAuthenticated || false
   const user = userState?.user
 
-  const navigation = [
+const navigation = [
     { name: "Home", href: "/" },
     { name: "Quiz", href: "/quiz" },
     { name: "Leaderboard", href: "/leaderboard" },
-    { name: "Panchang", href: "/panchang" },
     { name: "Daily Shlok", href: "/shlok" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" }
