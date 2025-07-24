@@ -1,4 +1,5 @@
 const { ApperClient } = window.ApperSDK;
+import { toast } from 'react-toastify';
 
 class PanchangService {
   constructor() {
@@ -109,8 +110,6 @@ class PanchangService {
 
 async getToday() {
     try {
-      // Import toast for notifications
-import { toast } from 'react-toastify';
       const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
       
       const params = {
