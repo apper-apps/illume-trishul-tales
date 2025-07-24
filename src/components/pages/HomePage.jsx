@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { panchangService } from "@/services/api/panchangService";
 import { shlokService } from "@/services/api/shlokService";
 import { quizService } from "@/services/api/quizService";
 import ApperIcon from "@/components/ApperIcon";
@@ -16,27 +15,24 @@ import Loading from "@/components/ui/Loading";
 const HomePage = () => {
   const [featuredQuizzes, setFeaturedQuizzes] = useState([])
   const [todayShlok, setTodayShlok] = useState(null)
-  const [todayPanchang, setTodayPanchang] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   useEffect(() => {
     loadHomeData()
   }, [])
 
-  const loadHomeData = async () => {
+const loadHomeData = async () => {
     try {
       setLoading(true)
       setError(null)
 
-const [quizzes, shlok, panchang] = await Promise.all([
+      const [quizzes, shlok] = await Promise.all([
         quizService.getFeatured(),
-        shlokService.getTodayShlok(),
-        panchangService.getToday()
+        shlokService.getTodayShlok()
       ])
 
       setFeaturedQuizzes(quizzes)
       setTodayShlok(shlok)
-      setTodayPanchang(panchang)
     } catch (err) {
       console.error("Error loading home data:", err);
       setError("Failed to load content. Please try again.")
@@ -130,37 +126,7 @@ const [quizzes, shlok, panchang] = await Promise.all([
                 </motion.div>
               )}
 
-{/* Today's Panchang */}
-              {todayPanchang && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="card-spiritual p-6">
-                    <h3 className="text-lg font-bold text-gradient mb-4 flex items-center gap-2">
-                      <ApperIcon name="Calendar" className="w-5 h-5" />
-                      Today's Panchang
-                    </h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Tithi:</span>
-                        <span className="font-medium">{todayPanchang.tithi}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Nakshatra:</span>
-                        <span className="font-medium">{todayPanchang.nakshatra}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Yoga:</span>
-                        <span className="font-medium">{todayPanchang.yoga}</span>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              )}
-            </div>
+</div>
           </div>
         </div>
       </section>
@@ -179,12 +145,12 @@ const [quizzes, shlok, panchang] = await Promise.all([
             <p className="text-xl opacity-90">Join thousands of people exploring Hindu culture</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               { icon: "Users", number: "10,000+", label: "Active Learners" },
               { icon: "Brain", number: "500+", label: "Quiz Questions" },
               { icon: "BookOpen", number: "365", label: "Daily Shlokas" },
-              { icon: "Calendar", number: "100%", label: "Accurate Panchang" }
+              { icon: "Calendar", number: "50+", label: "Sacred Festivals" }
             ].map((stat, index) => (
               <motion.div
                 key={stat.label}
