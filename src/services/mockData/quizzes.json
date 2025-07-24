@@ -1,0 +1,68 @@
+[
+  {
+    "Id": 1,
+    "title": "Hindu Mythology Essentials",
+    "description": "Test your knowledge of Hindu gods, goddesses, and epic stories from Ramayana and Mahabharata",
+    "category": "mythology",
+    "difficulty": "easy",
+    "questionCount": 15,
+    "duration": 12,
+    "icon": "Crown",
+    "featured": true
+  },
+  {
+    "Id": 2,
+    "title": "Festivals and Celebrations",
+    "description": "Explore the significance and traditions of major Hindu festivals celebrated across India",
+    "category": "festivals",
+    "difficulty": "medium",
+    "questionCount": 20,
+    "duration": 15,
+    "icon": "Sparkles",
+    "featured": true
+  },
+  {
+    "Id": 3,
+    "title": "Sacred Scriptures",
+    "description": "Dive deep into the wisdom of Vedas, Upanishads, Puranas, and other holy texts",
+    "category": "scriptures",
+    "difficulty": "hard",
+    "questionCount": 25,
+    "duration": 20,
+    "icon": "BookOpen",
+    "featured": true
+  },
+  {
+    "Id": 4,
+    "title": "Yoga and Philosophy",
+    "description": "Learn about the philosophical foundations of Hinduism and the practice of Yoga",
+    "category": "philosophy",
+    "difficulty": "medium",
+    "questionCount": 18,
+    "duration": 14,
+    "icon": "Heart",
+    "featured": true
+  },
+  {
+    "Id": 5,
+    "title": "Hindu Traditions and Rituals",
+    "description": "Understanding the meaning behind various Hindu customs and ritual practices",
+    "category": "traditions",
+    "difficulty": "easy",
+    "questionCount": 16,
+    "duration": 12,
+    "icon": "Flame",
+    "featured": false
+  },
+  {
+    "Id": 6,
+    "title": "Advanced Mythology",
+    "description": "Challenge yourself with complex stories and lesser-known mythological tales",
+    "category": "mythology",
+    "difficulty": "hard",
+    "questionCount": 30,
+    "duration": 25,
+    "icon": "Zap",
+    "featured": false
+  }
+]

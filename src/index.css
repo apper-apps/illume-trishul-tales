@@ -1,0 +1,75 @@
+@import 'react-toastify/dist/ReactToastify.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: #1f2937;
+    background-color: #FFF8F3;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-saffron text-white px-6 py-3 rounded-lg font-medium hover:brightness-110 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02];
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-saffron-600 border-2 border-saffron-500 px-6 py-3 rounded-lg font-medium hover:bg-saffron-50 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-[1.02];
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gold-200 hover:scale-[1.02];
+  }
+  
+  .card-spiritual {
+    @apply card hover:shadow-gold-500/20 hover:border-gold-300;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-spiritual bg-clip-text text-transparent;
+  }
+  
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-12 lg:py-16;
+  }
+}
+
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast {
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #F44336, #EF5350);
+}
+
+.Toastify__toast--info {
+  background: linear-gradient(135deg, #FF6B35, #FF9F1C);
+}

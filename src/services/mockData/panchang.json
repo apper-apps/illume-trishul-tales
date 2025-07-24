@@ -1,0 +1,80 @@
+[
+  {
+    "Id": 1,
+    "date": "2024-01-15",
+    "tithi": "Panchami (5th day)",
+    "nakshatra": "Rohini",
+    "yoga": "Siddha",
+    "karana": "Bava",
+    "sunrise": "07:12 AM",
+    "sunset": "05:47 PM",
+    "moonrise": "09:23 AM",
+    "moonset": "09:45 PM",
+    "festivals": ["Makar Sankranti (Regional)"]
+  },
+  {
+    "Id": 2,
+    "date": "2024-01-14",
+    "tithi": "Chaturthi (4th day)",
+    "nakshatra": "Krittika",
+    "yoga": "Vyatipata",
+    "karana": "Balava",
+    "sunrise": "07:12 AM",
+    "sunset": "05:46 PM",
+    "moonrise": "08:34 AM",
+    "moonset": "08:52 PM",
+    "festivals": ["Makar Sankranti"]
+  },
+  {
+    "Id": 3,
+    "date": "2024-01-13",
+    "tithi": "Tritiya (3rd day)",
+    "nakshatra": "Bharani",
+    "yoga": "Variyan",
+    "karana": "Kaulava",
+    "sunrise": "07:11 AM",
+    "sunset": "05:45 PM",
+    "moonrise": "07:45 AM",
+    "moonset": "07:58 PM",
+    "festivals": []
+  },
+  {
+    "Id": 4,
+    "date": "2024-01-12",
+    "tithi": "Dvitiya (2nd day)",
+    "nakshatra": "Ashwini",
+    "yoga": "Parigha",
+    "karana": "Taitila",
+    "sunrise": "07:11 AM",
+    "sunset": "05:44 PM",
+    "moonrise": "06:56 AM",
+    "moonset": "07:04 PM",
+    "festivals": []
+  },
+  {
+    "Id": 5,
+    "date": "2024-01-11",
+    "tithi": "Pratipada (1st day)",
+    "nakshatra": "Revati",
+    "yoga": "Shiva",
+    "karana": "Gara",
+    "sunrise": "07:10 AM",
+    "sunset": "05:43 PM",
+    "moonrise": "06:07 AM",
+    "moonset": "06:10 PM",
+    "festivals": []
+  },
+  {
+    "Id": 6,
+    "date": "2024-01-10",
+    "tithi": "Amavasya (New Moon)",
+    "nakshatra": "Uttara Bhadrapada",
+    "yoga": "Siddhi",
+    "karana": "Naga",
+    "sunrise": "07:10 AM",
+    "sunset": "05:42 PM",
+    "moonrise": "05:18 AM",
+    "moonset": "05:16 PM",
+    "festivals": []
+  }
+]
