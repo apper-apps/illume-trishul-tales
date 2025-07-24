@@ -62,8 +62,8 @@ async getTodayShlok() {
       
 const response = await apperClient.fetchRecords(this.tableName, params);
       
-      if (!response) {
-        console.error("Error fetching today's shlok: No response received from server");
+      if (!response || response === null || response === undefined) {
+        console.error("Error fetching today's shlok in shlok service: No response received from server");
         throw new Error("No response received from server");
       }
       
@@ -126,7 +126,8 @@ const response = await apperClient.fetchRecords(this.tableName, params);
       
 const response = await apperClient.getRecordById(this.tableName, id, params);
       
-      if (!response) {
+      if (!response || response === null || response === undefined) {
+        console.error(`Error fetching shlok with ID ${id} in shlok service: No response received from server`);
         throw new Error("No response received from server");
       }
       
