@@ -37,11 +37,15 @@ const QuizOption = ({
         "w-full p-4 text-left border-2 rounded-lg transition-all duration-200 font-medium",
         getOptionStyles()
       )}
-    >
-      <span className="font-semibold mr-3">
-        {String.fromCharCode(65 + index)}.
-      </span>
-      {option}
+>
+      <div className="flex items-start gap-3">
+        <span className="font-semibold text-lg flex-shrink-0 mt-0.5">
+          {String.fromCharCode(65 + index)}.
+        </span>
+        <span className="flex-1 leading-relaxed">
+          {option}
+        </span>
+      </div>
     </motion.button>
   )
 }
