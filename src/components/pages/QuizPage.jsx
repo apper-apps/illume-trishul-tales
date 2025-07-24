@@ -52,6 +52,31 @@ const QuizPage = () => {
     return () => clearInterval(timer)
   }, [timeLeft, quizCompleted])
 
+const parseOptions = (options) => {
+    // Handle both array format (mock data) and string format (database)
+    if (Array.isArray(options)) {
+      return options;
+    }
+    
+    if (typeof options === 'string') {
+      try {
+        // Try to parse as JSON first
+        const parsed = JSON.parse(options);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+        // If not JSON, split by newlines (common MultilineText format)
+        return options.split('\n').filter(opt => opt.trim().length > 0);
+      } catch (error) {
+        // If JSON parsing fails, split by newlines
+        return options.split('\n').filter(opt => opt.trim().length > 0);
+      }
+    }
+    
+    // Fallback to empty array
+    return [];
+  };
+
   const loadQuiz = async () => {
     try {
       setLoading(true)
@@ -62,8 +87,14 @@ const QuizPage = () => {
         quizService.getQuestions(parseInt(quizId))
       ])
 
+      // Parse options for each question
+      const parsedQuestions = questionsData.map(question => ({
+        ...question,
+        options: parseOptions(question.options)
+      }));
+
       setQuiz(quizData)
-      setQuestions(questionsData)
+      setQuestions(parsedQuestions)
       setTimeLeft(quizData.duration * 60) // Convert minutes to seconds
     } catch (err) {
       setError("Failed to load quiz. Please try again.")
@@ -79,12 +110,18 @@ const loadRandomQuiz = async () => {
 
       const questionsData = await quizService.getRandomQuestions(20)
       
-      setQuestions(questionsData)
+      // Parse options for each question
+      const parsedQuestions = questionsData.map(question => ({
+        ...question,
+        options: parseOptions(question.options)
+      }));
+      
+      setQuestions(parsedQuestions)
       setQuiz({
         title: `🕉️ Hindu Culture Quiz 🌺`,
         description: `✨ Test your knowledge of Hindu traditions and mythology ✨`,
         duration: 18,
-        questionCount: questionsData.length
+        questionCount: parsedQuestions.length
       })
       setTimeLeft(18 * 60)
     } catch (err) {
