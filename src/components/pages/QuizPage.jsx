@@ -142,9 +142,9 @@ const handleNameSubmit = async () => {
     setShowNameModal(false)
     setQuizCompleted(true)
 
-    // Save score
+// Save score
     try {
-await quizService.saveScore({
+      await quizService.saveScore({
         userName: userName.trim(),
         score: score,
         totalQuestions: questions.length,
@@ -436,6 +436,7 @@ const text = `🏆 ${title}\n\n🌟 ${userName} जी ने हिंदू �
                                 toast.success("🎉 प्रमाणपत्र शेयर हो गया!")
                                 return
                               }
+}
                             
                             // Fallback to WhatsApp direct link (mobile-friendly)
                             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`
@@ -462,7 +463,6 @@ const text = `🏆 ${title}\n\n🌟 ${userName} जी ने हिंदू �
                             toast.error("❌ शेयर नहीं हो सका। कृपया फिर से कोशिश करें")
                           }
                         }, 'image/png')
-                      } catch (error) {
                         console.error('Certificate generation failed:', error)
                         toast.error("❌ प्रमाणपत्र बनाने में समस्या हुई")
                       }
