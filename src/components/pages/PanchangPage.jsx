@@ -207,7 +207,7 @@ const PanchangPage = () => {
             {panchangData && <PanchangCard panchang={panchangData} />}
           </motion.div>
         ) : (
-          /* Weekly View */
+/* Weekly View */
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -215,51 +215,141 @@ const PanchangPage = () => {
           >
             <Card className="card-spiritual p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
-                Weekly Panchang Overview
+                Weekly Panchang Calendar
               </h3>
               
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gold-200">
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Date</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Tithi</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Nakshatra</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Yoga</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Sunrise</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Sunset</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {weeklyData.map((dayData, index) => (
-                      <motion.tr
-                        key={dayData.date}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                        className="border-b border-gray-100 hover:bg-saffron-50 transition-colors duration-200"
-                      >
-                        <td className="py-3 px-4">
-                          <div>
-                            <div className="font-medium text-gray-800">
-                              {format(new Date(dayData.date), "EEE, MMM d")}
-                            </div>
-                            {dayData.festivals && dayData.festivals.length > 0 && (
-                              <div className="text-xs text-saffron-600 font-medium">
-                                {dayData.festivals[0]}
+              {/* Calendar Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                {weeklyData.map((dayData, index) => {
+                  const dayDate = new Date(dayData.date)
+                  const isToday = format(dayDate, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+                  const hasFestivals = dayData.festivals && dayData.festivals.length > 0
+                  const hasMuhurats = dayData.muhurats && dayData.muhurats.length > 0
+                  
+                  return (
+                    <motion.div
+                      key={dayData.date}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className={`relative p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-lg ${
+                        isToday
+                          ? 'border-saffron-500 bg-saffron-50 shadow-md'
+                          : hasFestivals
+                          ? 'border-gold-400 bg-gold-50 hover:border-gold-500'
+                          : 'border-gray-200 bg-white hover:border-gray-300'
+                      }`}
+                    >
+                      {/* Date Header */}
+                      <div className="text-center mb-3">
+                        <div className={`text-lg font-bold ${
+                          isToday ? 'text-saffron-700' : 'text-gray-800'
+                        }`}>
+                          {format(dayDate, 'EEE')}
+                        </div>
+                        <div className={`text-sm ${
+                          isToday ? 'text-saffron-600' : 'text-gray-600'
+                        }`}>
+                          {format(dayDate, 'MMM d')}
+                        </div>
+                      </div>
+
+                      {/* Festival Indicator */}
+                      {hasFestivals && (
+                        <div className="absolute top-2 right-2">
+                          <div className="w-3 h-3 bg-gradient-saffron rounded-full animate-pulse"></div>
+                        </div>
+                      )}
+
+                      {/* Festivals */}
+                      {hasFestivals && (
+                        <div className="mb-3">
+                          <div className="text-xs font-medium text-saffron-700 bg-saffron-100 px-2 py-1 rounded-full text-center">
+                            <ApperIcon name="Calendar" className="w-3 h-3 inline mr-1" />
+                            {dayData.festivals[0]}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Key Panchang Info */}
+                      <div className="space-y-2 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Tithi:</span>
+                          <span className="font-medium text-gray-700 text-right">
+                            {dayData.tithi.split(' ')[0]}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Nakshatra:</span>
+                          <span className="font-medium text-gray-700">
+                            {dayData.nakshatra}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Sunrise:</span>
+                          <span className="font-medium text-gray-700">
+                            {dayData.sunrise}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Muhurat Timings */}
+                      {hasMuhurats && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <div className="text-xs text-gray-600 mb-2 font-medium">
+                            <ApperIcon name="Clock" className="w-3 h-3 inline mr-1" />
+                            Muhurat Times:
+                          </div>
+                          <div className="space-y-1">
+                            {dayData.muhurats.slice(0, 2).map((muhurat, idx) => (
+                              <div key={idx} className="text-xs">
+                                <div className={`font-medium ${
+                                  muhurat.type === 'festival' ? 'text-gold-700' :
+                                  muhurat.type === 'spiritual' ? 'text-saffron-600' :
+                                  'text-orange-600'
+                                }`}>
+                                  {muhurat.name}
+                                </div>
+                                <div className="text-gray-600">
+                                  {muhurat.time}
+                                </div>
+                              </div>
+                            ))}
+                            {dayData.muhurats.length > 2 && (
+                              <div className="text-xs text-gray-500">
+                                +{dayData.muhurats.length - 2} more
                               </div>
                             )}
                           </div>
-                        </td>
-                        <td className="py-3 px-4 text-gray-700">{dayData.tithi}</td>
-                        <td className="py-3 px-4 text-gray-700">{dayData.nakshatra}</td>
-                        <td className="py-3 px-4 text-gray-700">{dayData.yoga}</td>
-                        <td className="py-3 px-4 text-gray-700">{dayData.sunrise}</td>
-                        <td className="py-3 px-4 text-gray-700">{dayData.sunset}</td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </div>
+                      )}
+                    </motion.div>
+                  )
+                })}
+              </div>
+
+              {/* Weekly Summary */}
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                  <div className="bg-gradient-to-br from-saffron-50 to-saffron-100 p-4 rounded-lg">
+                    <ApperIcon name="Calendar" className="w-6 h-6 mx-auto mb-2 text-saffron-600" />
+                    <div className="text-sm font-medium text-saffron-800">
+                      {weeklyData.filter(d => d.festivals && d.festivals.length > 0).length} Festivals
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-gold-50 to-gold-100 p-4 rounded-lg">
+                    <ApperIcon name="Clock" className="w-6 h-6 mx-auto mb-2 text-gold-600" />
+                    <div className="text-sm font-medium text-gold-800">
+                      {weeklyData.reduce((acc, d) => acc + (d.muhurats ? d.muhurats.length : 0), 0)} Muhurat Times
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-lg">
+                    <ApperIcon name="Star" className="w-6 h-6 mx-auto mb-2 text-orange-600" />
+                    <div className="text-sm font-medium text-orange-800">
+                      {new Set(weeklyData.map(d => d.nakshatra)).size} Nakshatras
+                    </div>
+                  </div>
+                </div>
               </div>
             </Card>
           </motion.div>

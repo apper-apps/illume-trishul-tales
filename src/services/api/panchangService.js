@@ -37,10 +37,47 @@ class PanchangService {
       const currentDate = new Date(startDate)
       currentDate.setDate(startDate.getDate() + i)
       const dayData = await this.getPanchangByDate(currentDate)
-      weekData.push(dayData)
+weekData.push(dayData)
     }
     
     return weekData
+  }
+
+  async getFestivalMuhurats(date) {
+    await delay(200)
+    const panchang = await this.getPanchangByDate(date)
+    
+    if (panchang.festivals && panchang.festivals.length > 0) {
+      return panchang.muhurats || []
+    }
+    
+    return []
+  }
+
+  async getAuspiciousPeriods(date) {
+    await delay(150)
+    const panchang = await this.getPanchangByDate(date)
+    
+    // Return general auspicious periods based on yoga and nakshatra
+    const auspiciousPeriods = []
+    
+    if (panchang.yoga === 'Siddha' || panchang.yoga === 'Siddhi') {
+      auspiciousPeriods.push({
+        name: 'Siddha Yoga Period',
+        time: '06:00 AM - 08:00 AM',
+        type: 'general'
+      })
+    }
+    
+    if (panchang.nakshatra === 'Rohini' || panchang.nakshatra === 'Pushya') {
+      auspiciousPeriods.push({
+        name: 'Auspicious Nakshatra',
+        time: '10:00 AM - 12:00 PM',
+        type: 'nakshatra'
+      })
+    }
+    
+    return auspiciousPeriods
   }
 
   async getMonthlyPanchang(year, month) {
