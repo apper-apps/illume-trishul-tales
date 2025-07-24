@@ -107,7 +107,9 @@ class PanchangService {
     }
   }
 
-  async getToday() {
+async getToday() {
+    const { toast } = await import('react-toastify');
+    
     try {
       const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
       
@@ -151,18 +153,21 @@ class PanchangService {
       const response = await this.apperClient.fetchRecords(this.tableName, params);
 
       if (!response.success) {
-        console.error("Error fetching today's panchang:", response.message);
-        throw new Error(response.message);
+        console.error("Error fetching today's panchang in panchang service:", response.message);
+        toast.error(response.message);
+        return null;
       }
 
       return response.data && response.data.length > 0 ? response.data[0] : null;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error("Error fetching today's panchang in panchang service:", error?.response?.data?.message);
+        toast.error(error?.response?.data?.message);
       } else {
         console.error("Error fetching today's panchang in panchang service:", error.message);
+        toast.error(error.message);
       }
-      throw error;
+      return null;
     }
   }
 
