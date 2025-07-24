@@ -421,9 +421,9 @@ const handleNameSubmit = async () => {
                         canvas.toBlob(async (blob) => {
 const text = `🏆 ${title}\n\n🌟 ${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए! ${emoji}\n\n✨ ${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n🕉️ #TrishulTales #HinduCulture #Quiz 🌺`
                           
-                          try {
+try {
                             // Try Web Share API with image (best for mobile)
-                            if (navigator.share && navigator.canShare && typeof File !== 'undefined') {
+                            if (navigator.share && navigator.canShare && typeof File !== 'undefined' && File) {
                               const file = new File([blob], 'certificate.png', { type: 'image/png' })
                               const canShareFiles = await navigator.canShare({ files: [file] })
                               
@@ -436,8 +436,7 @@ const text = `🏆 ${title}\n\n🌟 ${userName} जी ने हिंदू �
                                 toast.success("🎉 प्रमाणपत्र शेयर हो गया!")
                                 return
                               }
-}
-                            
+                            }
                             // Fallback to WhatsApp direct link (mobile-friendly)
                             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`
                             const newWindow = window.open(whatsappUrl, '_blank')
@@ -461,8 +460,9 @@ const text = `🏆 ${title}\n\n🌟 ${userName} जी ने हिंदू �
                           } catch (error) {
                             console.error('Sharing failed:', error)
                             toast.error("❌ शेयर नहीं हो सका। कृपया फिर से कोशिश करें")
-                          }
+}
                         }, 'image/png')
+                      } catch (error) {
                         console.error('Certificate generation failed:', error)
                         toast.error("❌ प्रमाणपत्र बनाने में समस्या हुई")
                       }
