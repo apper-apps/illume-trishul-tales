@@ -63,97 +63,12 @@ const store = configureStore({
 });
 
 // Create auth context
+import Login from '@/components/pages/Login';
+import Signup from '@/components/pages/Signup';
+
 export const AuthContext = createContext(null);
 
 // Login component
-const Login = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [isInitialized, setIsInitialized] = useState(false);
-  
-  useEffect(() => {
-    const checkSDK = () => {
-      if (window.ApperSDK) {
-        const { ApperUI } = window.ApperSDK;
-        ApperUI.showLogin("#authentication");
-        setIsInitialized(true);
-      } else {
-        setTimeout(checkSDK, 100);
-      }
-    };
-    checkSDK();
-  }, []);
-  
-  if (!isInitialized) {
-    return <div className="flex items-center justify-center p-6 h-screen"><div>Loading...</div></div>;
-  }
-  
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-saffron-50 to-gold-50">
-      <div className="w-full max-w-md space-y-8 p-8 bg-white rounded-lg shadow-md">
-        <div className="flex flex-col gap-6 items-center justify-center">
-          <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-r from-saffron-500 to-saffron-600 text-white text-2xl font-bold">
-            T
-          </div>
-          <div className="flex flex-col gap-1 items-center justify-center">
-            <div className="text-center text-lg xl:text-xl font-bold">
-              Sign in to Trishul Tales
-            </div>
-            <div className="text-center text-sm text-gray-500">
-              Welcome back, please sign in to continue
-            </div>
-          </div>
-        </div>
-        <div id="authentication" />
-      </div>
-    </div>
-  );
-};
-
-// Signup component  
-const Signup = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [isInitialized, setIsInitialized] = useState(false);
-  
-  useEffect(() => {
-    const checkSDK = () => {
-      if (window.ApperSDK) {
-        const { ApperUI } = window.ApperSDK;
-        ApperUI.showSignup("#authentication");
-        setIsInitialized(true);
-      } else {
-        setTimeout(checkSDK, 100);
-      }
-    };
-    checkSDK();
-  }, []);
-  
-  if (!isInitialized) {
-    return <div className="flex items-center justify-center p-6 h-screen"><div>Loading...</div></div>;
-  }
-  
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-saffron-50 to-gold-50">
-      <div className="w-full max-w-md space-y-8 p-8 bg-white rounded-lg shadow-md">
-        <div className="flex flex-col gap-6 items-center justify-center">
-          <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center bg-gradient-to-r from-saffron-500 to-saffron-600 text-white text-2xl font-bold">
-            T
-          </div>
-          <div className="flex flex-col gap-1 items-center justify-center">
-            <div className="text-center text-lg xl:text-xl font-bold">
-              Create Account
-            </div>
-            <div className="text-center text-sm text-gray-500">
-              Please create an account to continue
-            </div>
-          </div>
-        </div>
-        <div id="authentication" />
-      </div>
-    </div>
-  );
-};
 
 // Callback component
 const Callback = () => {
@@ -235,7 +150,7 @@ function AppContent() {
   const userState = useSelector((state) => state.user);
   const isAuthenticated = userState?.isAuthenticated || false;
   
-  // Initialize authentication only when needed (for admin login)
+// Initialize authentication system once for the entire app
   useEffect(() => {
     const initializeAuth = () => {
       if (window.ApperSDK) {
@@ -246,7 +161,7 @@ function AppContent() {
           apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
         });
         
-        // Only setup authentication handlers, don't force authentication
+        // Setup authentication handlers centrally
         ApperUI.setup(client, {
           target: '#authentication',
           clientId: import.meta.env.VITE_APPER_PROJECT_ID,
@@ -275,7 +190,7 @@ function AppContent() {
       }
     };
 
-    // Initialize auth system but don't require authentication
+    // Initialize auth system
     if (window.ApperSDK) {
       initializeAuth();
     }
