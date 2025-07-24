@@ -58,15 +58,15 @@ const Header = () => {
             ))}
           </div>
 
-          {/* User section and Mobile menu button */}
+{/* User section and Mobile menu button */}
           <div className="flex items-center gap-4">
-            {/* User info and logout */}
+            {/* User info and logout for authenticated admin users */}
             {isAuthenticated && user && (
               <div className="hidden lg:flex items-center gap-3">
                 <div className="text-sm">
                   <span className="text-gray-600">Welcome, </span>
                   <span className="font-medium text-saffron-600">
-                    {user.firstName || user.name || 'User'}
+                    {user.firstName || user.name || 'Admin'}
                   </span>
                 </div>
                 <Button
@@ -78,6 +78,22 @@ const Header = () => {
                   <ApperIcon name="LogOut" className="w-4 h-4" />
                   Logout
                 </Button>
+              </div>
+            )}
+
+            {/* Admin Login button for unauthenticated users */}
+            {!isAuthenticated && (
+              <div className="hidden lg:flex items-center">
+                <Link to="/login">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <ApperIcon name="LogIn" className="w-4 h-4" />
+                    Admin Login
+                  </Button>
+                </Link>
               </div>
             )}
 
@@ -119,12 +135,12 @@ const Header = () => {
                   </Link>
                 ))}
                 
-                {/* Mobile user section */}
-                {isAuthenticated && user && (
+{/* Mobile user section */}
+                {isAuthenticated && user ? (
                   <div className="pt-4 border-t border-gold-200">
                     <div className="px-4 py-2 text-sm text-gray-600">
                       Logged in as: <span className="font-medium text-saffron-600">
-                        {user.firstName || user.name || 'User'}
+                        {user.firstName || user.name || 'Admin'}
                       </span>
                     </div>
                     <button
@@ -137,6 +153,17 @@ const Header = () => {
                       <ApperIcon name="LogOut" className="w-4 h-4" />
                       Logout
                     </button>
+                  </div>
+                ) : (
+                  <div className="pt-4 border-t border-gold-200">
+                    <Link
+                      to="/login"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full text-left px-4 py-2 text-sm font-medium text-saffron-600 hover:bg-saffron-50 rounded-lg flex items-center gap-2"
+                    >
+                      <ApperIcon name="LogIn" className="w-4 h-4" />
+                      Admin Login
+                    </Link>
                   </div>
                 )}
 </div>
