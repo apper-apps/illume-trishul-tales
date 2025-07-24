@@ -1,74 +1,13 @@
 [
   {
     "Id": 1,
-    "title": "Hindu Mythology for Kids",
-    "description": "Fun stories of Hindu gods, goddesses, and epic tales from Ramayana and Mahabharata for young learners",
-    "category": "mythology",
-    "difficulty": "easy",
-    "questionCount": 15,
-    "duration": 12,
+    "title": "🕉️ Hindu Culture Quiz ✨",
+    "description": "Comprehensive quiz covering Hindu mythology, festivals, scriptures, traditions and philosophy",
+    "category": "comprehensive",
+    "difficulty": "mixed",
+    "questionCount": 20,
+    "duration": 18,
     "icon": "Crown",
-    "featured": true,
-    "ageGroup": "kids"
-  },
-{
-    "Id": 2,
-    "title": "Hindu Festivals for Kids",
-    "description": "Learn about colorful Hindu festivals and celebrations in a fun way",
-    "category": "festivals",
-    "difficulty": "easy",
-    "questionCount": 12,
-    "duration": 10,
-    "icon": "Sparkles",
-    "featured": true,
-    "ageGroup": "kids"
-  },
-{
-    "Id": 3,
-    "title": "Sacred Scriptures",
-    "description": "Dive deep into the wisdom of Vedas, Upanishads, Puranas, and other holy texts",
-    "category": "scriptures",
-    "difficulty": "hard",
-    "questionCount": 25,
-    "duration": 20,
-    "icon": "BookOpen",
-    "featured": true,
-    "ageGroup": "adults"
-  },
-  {
-    "Id": 4,
-    "title": "Yoga and Philosophy",
-    "description": "Learn about the philosophical foundations of Hinduism and the practice of Yoga",
-    "category": "philosophy",
-    "difficulty": "medium",
-    "questionCount": 18,
-    "duration": 14,
-    "icon": "Heart",
-    "featured": true,
-    "ageGroup": "adults"
-  },
-{
-    "Id": 5,
-    "title": "Hindu Traditions and Rituals",
-    "description": "Understanding the meaning behind various Hindu customs and ritual practices",
-    "category": "traditions",
-    "difficulty": "medium",
-    "questionCount": 16,
-    "duration": 12,
-    "icon": "Flame",
-    "featured": false,
-    "ageGroup": "adults"
-  },
-  {
-    "Id": 6,
-    "title": "Advanced Mythology",
-    "description": "Challenge yourself with complex stories and lesser-known mythological tales",
-    "category": "mythology",
-    "difficulty": "hard",
-    "questionCount": 30,
-    "duration": 25,
-    "icon": "Zap",
-    "featured": false,
-    "ageGroup": "adults"
+    "featured": true
   }
 ]

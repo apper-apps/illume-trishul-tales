@@ -29,13 +29,9 @@ class QuizService {
     return questions.map(q => ({ ...q }))
 }
 
-  async getRandomQuestions(count = 20, ageGroup = null) {
+async getRandomQuestions(count = 20) {
     await delay(500)
     let questions = [...questionData]
-    
-    if (ageGroup) {
-      questions = questions.filter(q => q.ageGroup === ageGroup)
-    }
     
     const shuffled = questions.sort(() => 0.5 - Math.random())
     return shuffled.slice(0, count).map(q => ({ ...q }))
@@ -52,16 +48,15 @@ class QuizService {
     return questions.map(q => ({ ...q }))
   }
 
-  async saveScore(scoreData) {
-await delay(300)
+async saveScore(scoreData) {
+    await delay(300)
     const scores = JSON.parse(localStorage.getItem("quizScores") || "[]")
     const newScore = {
       Id: scores.length + 1,
       userName: scoreData.userName || "Anonymous User",
       score: scoreData.score,
       totalQuestions: scoreData.totalQuestions,
-      category: scoreData.category || "General",
-      ageGroup: scoreData.ageGroup || "General",
+      category: scoreData.category || "Hindu Culture",
       completedAt: new Date().toISOString()
     }
     scores.push(newScore)

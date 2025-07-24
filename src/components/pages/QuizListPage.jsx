@@ -32,11 +32,6 @@ const QuizListPage = () => {
     { value: "hard", label: "Hard" }
 ]
 
-const ageGroups = [
-    { value: "all", label: "All Ages" },
-    { value: "kids", label: "👶 Kids" },
-    { value: "adults", label: "👨‍🎓 Adults" }
-  ]
 
   useEffect(() => {
     loadQuizzes()
@@ -121,15 +116,15 @@ const filterQuizzes = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-center mb-12"
         >
-          <Button 
+<Button 
             size="lg" 
             onClick={() => window.location.href = "/quiz/random"}
             className="flex items-center gap-3 shadow-xl"
           >
             <ApperIcon name="Zap" className="w-5 h-5" />
-            Start Random Quiz
+            🕉️ Start Hindu Culture Quiz ✨
           </Button>
-          <p className="text-sm text-gray-600 mt-2">Get 20 random questions from all categories</p>
+          <p className="text-sm text-gray-600 mt-2">🌺 Test your knowledge of Hindu traditions and mythology 🌺</p>
         </motion.div>
 
         {/* Filters */}
@@ -170,28 +165,13 @@ const filterQuizzes = () => {
               </select>
             </div>
 
-            <div className="flex items-center gap-2">
-              <ApperIcon name="Users" className="w-4 h-4 text-gray-600" />
-              <select
-                value={selectedAgeGroup}
-                onChange={(e) => setSelectedAgeGroup(e.target.value)}
-                className="px-4 py-2 border-2 border-saffron-200 rounded-lg focus:border-saffron-500 focus:outline-none bg-white"
-              >
-                {ageGroups.map(ageGroup => (
-                  <option key={ageGroup.value} value={ageGroup.value}>
-                    {ageGroup.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-{(selectedCategory !== "all" || selectedDifficulty !== "all" || selectedAgeGroup !== "all") && (
+{(selectedCategory !== "all" || selectedDifficulty !== "all") && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
                   setSelectedCategory("all")
                   setSelectedDifficulty("all")
-                  setSelectedAgeGroup("all")
                 }}
                 className="flex items-center gap-2"
               >
@@ -223,7 +203,6 @@ const filterQuizzes = () => {
 onAction={() => {
               setSelectedCategory("all")
               setSelectedDifficulty("all")
-              setSelectedAgeGroup("all")
             }}
             icon="Search"
           />

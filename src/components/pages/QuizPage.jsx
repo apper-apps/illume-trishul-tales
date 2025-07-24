@@ -28,13 +28,11 @@ const QuizPage = () => {
   const [quizCompleted, setQuizCompleted] = useState(false)
   const [showNameModal, setShowNameModal] = useState(false)
   const [userName, setUserName] = useState("")
-  const [showAgeSelection, setShowAgeSelection] = useState(false)
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState(null)
 useEffect(() => {
     if (quizId) {
-      setShowAgeSelection(true)
+      loadQuiz()
     } else {
-      setShowAgeSelection(true)
+      loadRandomQuiz()
     }
   }, [quizId])
 
@@ -73,53 +71,21 @@ useEffect(() => {
     }
   }
 
-const loadRandomQuiz = async (ageGroup) => {
+const loadRandomQuiz = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const questionsData = await quizService.getRandomQuestions(20, ageGroup)
+      const questionsData = await quizService.getRandomQuestions(20)
       
       setQuestions(questionsData)
       setQuiz({
-        title: `Hindu Mythology Quiz - ${ageGroup === 'kids' ? 'Kids' : 'Adults'}`,
-        description: `Test your knowledge of Hindu traditions and mythology`,
-        duration: ageGroup === 'kids' ? 15 : 20,
-        questionCount: questionsData.length,
-        ageGroup: ageGroup
+        title: `🕉️ Hindu Culture Quiz 🌺`,
+        description: `✨ Test your knowledge of Hindu traditions and mythology ✨`,
+        duration: 18,
+        questionCount: questionsData.length
       })
-      setTimeLeft((ageGroup === 'kids' ? 15 : 20) * 60)
-    } catch (err) {
-      setError("Failed to load quiz. Please try again.")
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleAgeSelection = (ageGroup) => {
-    setSelectedAgeGroup(ageGroup)
-    setShowAgeSelection(false)
-    
-    if (quizId) {
-      loadQuizWithAge(ageGroup)
-    } else {
-      loadRandomQuiz(ageGroup)
-    }
-  }
-
-  const loadQuizWithAge = async (ageGroup) => {
-    try {
-      setLoading(true)
-      setError(null)
-
-      const [quizData, questionsData] = await Promise.all([
-        quizService.getById(parseInt(quizId)),
-        quizService.getQuestionsByAge(parseInt(quizId), ageGroup)
-      ])
-
-      setQuiz({...quizData, ageGroup})
-      setQuestions(questionsData)
-      setTimeLeft(quizData.duration * 60)
+      setTimeLeft(18 * 60)
     } catch (err) {
       setError("Failed to load quiz. Please try again.")
     } finally {
@@ -178,17 +144,16 @@ const handleNameSubmit = async () => {
 
     // Save score
     try {
-      await quizService.saveScore({
+await quizService.saveScore({
         userName: userName.trim(),
         score: score,
         totalQuestions: questions.length,
-        category: quiz?.category || "General",
-        ageGroup: selectedAgeGroup || "General"
+        category: quiz?.category || "General"
       })
     } catch (err) {
       console.error("Failed to save score:", err)
     }
-    toast.success(`Quiz completed! You scored ${score}/${questions.length}`)
+    toast.success(`🎉 Quiz completed! You scored ${score}/${questions.length} ✨`)
   }
 
   const formatTime = (seconds) => {
@@ -222,65 +187,6 @@ const handleNameSubmit = async () => {
     return { emoji, title, message, percentage }
   }
 
-  // Age selection screen
-  if (showAgeSelection) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-gold-50 py-8">
-        <div className="max-w-md mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card className="card-spiritual p-8 text-center">
-              <div className="mb-6">
-                <div className="w-16 h-16 bg-gradient-saffron rounded-full flex items-center justify-center mx-auto mb-4">
-                  <ApperIcon name="Users" className="w-8 h-8 text-white" />
-                </div>
-<h2 className="text-2xl font-bold text-gradient mb-2">Select Age Group</h2>
-                <p className="text-gray-600">Choose your age group for appropriate questions</p>
-              </div>
-
-              <div className="space-y-4">
-                <Button 
-                  onClick={() => handleAgeSelection('kids')}
-                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600"
-                >
-                  <ApperIcon name="Baby" className="w-5 h-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">👶 Kids</div>
-                    <div className="text-xs opacity-90">Fun and simple questions</div>
-                  </div>
-                </Button>
-                
-                <Button 
-                  onClick={() => handleAgeSelection('adults')}
-                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-saffron-500 to-orange-500 hover:from-saffron-600 hover:to-orange-600"
-                >
-                  <ApperIcon name="GraduationCap" className="w-5 h-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">👨‍🎓 Adults</div>
-                    <div className="text-xs opacity-90">Advanced questions</div>
-                  </div>
-                </Button>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-gray-200">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate('/quiz')}
-                  className="text-gray-600"
-                >
-                  <ApperIcon name="ArrowLeft" className="w-4 h-4 mr-2" />
-                  Back to Quiz List
-                </Button>
-              </div>
-            </Card>
-</motion.div>
-        </div>
-      </div>
-    )
-  }
 
   if (loading) {
     return (
@@ -420,9 +326,9 @@ const handleNameSubmit = async () => {
                         const canvas = document.createElement('canvas')
                         const ctx = canvas.getContext('2d')
                         
-                        // Mobile-friendly A4 size (794x1123px for better WhatsApp display)
-                        canvas.width = 794
-                        canvas.height = 1123
+// Mobile-friendly size (optimized for WhatsApp sharing)
+                        canvas.width = 600
+                        canvas.height = 800
                         
                         // Create gradient background
                         const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
@@ -446,49 +352,49 @@ const handleNameSubmit = async () => {
                         ctx.textAlign = 'center'
                         ctx.fillStyle = '#1f2937'
                         
-                        // Title with emoji
-                        ctx.font = 'bold 36px Arial'
-                        ctx.fillText('🏆 प्रमाणपत्र 🏆', canvas.width / 2, 120)
-                        ctx.font = '24px Arial'
-                        ctx.fillStyle = '#6b7280'
-                        ctx.fillText('Hindu Culture Quiz Certificate', canvas.width / 2, 160)
-                        
-                        // User name section
-                        ctx.fillStyle = '#1f2937'
-                        ctx.font = '20px Arial'
-                        ctx.fillText('यह प्रमाणित किया जाता है कि', canvas.width / 2, 220)
-                        ctx.font = 'bold 32px Arial'
-                        ctx.fillText(userName, canvas.width / 2, 270)
-                        ctx.font = '20px Arial'
-                        ctx.fillText('ने सफलतापूर्वक पूर्ण किया है', canvas.width / 2, 310)
-                        
-                        // Achievement title with emoji
+// Title with more emojis
                         ctx.font = 'bold 28px Arial'
+                        ctx.fillText('🏆 प्रमाणपत्र 🏆', canvas.width / 2, 80)
+                        ctx.font = '18px Arial'
+                        ctx.fillStyle = '#6b7280'
+                        ctx.fillText('✨ Hindu Culture Quiz Certificate ✨', canvas.width / 2, 110)
+                        
+// User name section
+                        ctx.fillStyle = '#1f2937'
+                        ctx.font = '16px Arial'
+                        ctx.fillText('यह प्रमाणित किया जाता है कि', canvas.width / 2, 150)
+                        ctx.font = 'bold 24px Arial'
+                        ctx.fillText(userName, canvas.width / 2, 180)
+                        ctx.font = '16px Arial'
+                        ctx.fillText('ने सफलतापूर्वक पूर्ण किया है', canvas.width / 2, 205)
+                        
+// Achievement title with emoji
+                        ctx.font = 'bold 22px Arial'
                         ctx.fillStyle = '#FF6B35'
-                        ctx.fillText(`${emoji} ${title}`, canvas.width / 2, 380)
+                        ctx.fillText(`${emoji} ${title}`, canvas.width / 2, 240)
                         
                         // Score section
                         ctx.fillStyle = '#1f2937'
-                        ctx.font = 'bold 24px Arial'
-                        ctx.fillText(`स्कोर: ${score}/${questions.length} (${Math.round(percentage)}%)`, canvas.width / 2, 440)
+                        ctx.font = 'bold 20px Arial'
+                        ctx.fillText(`🎯 स्कोर: ${score}/${questions.length} (${Math.round(percentage)}%) 🎯`, canvas.width / 2, 275)
                         
-                        // Message section (wrapped text)
-                        ctx.font = '18px Arial'
+// Message section (wrapped text)
+                        ctx.font = '14px Arial'
                         ctx.fillStyle = '#374151'
-                        const lines = wrapText(ctx, message, canvas.width - 120)
-                        let yPos = 500
+                        const lines = wrapText(ctx, message, canvas.width - 60)
+                        let yPos = 310
                         lines.forEach(line => {
                           ctx.fillText(line, canvas.width / 2, yPos)
-                          yPos += 30
+                          yPos += 20
                         })
                         
-                        // Footer with emojis
-                        ctx.font = '20px Arial'
-                        ctx.fillStyle = '#9ca3af'
-                        ctx.fillText('🕉️ Trishul Tales 🕉️', canvas.width / 2, canvas.height - 100)
-                        ctx.fillText('Hindu Culture & Wisdom', canvas.width / 2, canvas.height - 70)
+// Footer with emojis
                         ctx.font = '16px Arial'
-                        ctx.fillText(new Date().toLocaleDateString('hi-IN'), canvas.width / 2, canvas.height - 40)
+                        ctx.fillStyle = '#9ca3af'
+                        ctx.fillText('🕉️ Trishul Tales 🌺', canvas.width / 2, canvas.height - 70)
+                        ctx.fillText('Hindu Culture & Wisdom ✨', canvas.width / 2, canvas.height - 50)
+                        ctx.font = '12px Arial'
+                        ctx.fillText(new Date().toLocaleDateString('hi-IN'), canvas.width / 2, canvas.height - 25)
                         
                         // Helper function for text wrapping
                         function wrapText(ctx, text, maxWidth) {
@@ -511,12 +417,13 @@ const handleNameSubmit = async () => {
                         }
                         
                         // Try to share image + text
+// Try to share image + text
                         canvas.toBlob(async (blob) => {
-                          const text = `🏆 ${title}\n\n${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए! ${emoji}\n\n✨ ${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n🕉️ #TrishulTales #HinduCulture #Quiz`
+const text = `🏆 ${title}\n\n🌟 ${userName} जी ने हिंदू संस्कृति प्रश्नोत्तरी में ${score}/${questions.length} अंक (${Math.round(percentage)}%) प्राप्त किए! ${emoji}\n\n✨ ${message}\n\n🔗 आप भी करें: ${window.location.origin}/quiz\n\n🕉️ #TrishulTales #HinduCulture #Quiz 🌺`
                           
                           try {
                             // Try Web Share API with image (best for mobile)
-                            if (navigator.share && navigator.canShare) {
+                            if (navigator.share && navigator.canShare && typeof File !== 'undefined') {
                               const file = new File([blob], 'certificate.png', { type: 'image/png' })
                               const canShareFiles = await navigator.canShare({ files: [file] })
                               
@@ -529,7 +436,6 @@ const handleNameSubmit = async () => {
                                 toast.success("🎉 प्रमाणपत्र शेयर हो गया!")
                                 return
                               }
-                            }
                             
                             // Fallback to WhatsApp direct link (mobile-friendly)
                             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`

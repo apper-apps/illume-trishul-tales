@@ -32,10 +32,9 @@ const generateShlokImage = async () => {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       
-// Set canvas size (mobile-friendly A4)
-      canvas.width = 794
-canvas.width = 794
-      canvas.height = 1123
+// Set canvas size (mobile-friendly)
+      canvas.width = 600
+      canvas.height = 850
       
       // Create gradient background
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
@@ -166,20 +165,35 @@ canvas.width = 794
               
               if (canShareFiles) {
                 await navigator.share({
-                  title: 'Daily Shlok',
-                  text: 'Check out this beautiful Shlok!',
+                  title: '🕉️ Daily Shlok 🌺',
+                  text: 'Check out this beautiful Shlok! ✨',
                   files: [file]
                 })
-                toast.success('Image shared successfully!')
+                toast.success('🎉 Image shared successfully!')
                 return
               }
             }
-            // Fallback to download
-            const link = document.createElement('a')
-            link.download = `shlok-${Date.now()}.png`
-            link.href = URL.createObjectURL(blob)
-            link.click()
-            toast.success('Image downloaded! You can now share it manually.')
+            
+            // Enhanced WhatsApp sharing fallback
+            const shareText = `🕉️ आज का श्लोक 🌺\n\n${shlok.sanskrit}\n\n${shlok.hindi}\n\n${shlok.english}\n\n— ${shlok.source}${customName.trim() ? `\n\nShared by: ${customName.trim()}` : ''}\n\n✨ From Trishul Tales\n${window.location.href}`
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`
+            const newWindow = window.open(whatsappUrl, '_blank')
+            
+            if (newWindow) {
+              // Also download image for manual sharing
+              const link = document.createElement('a')
+              link.download = `shlok-${Date.now()}.png`
+              link.href = URL.createObjectURL(blob)
+              link.click()
+              toast.success('📱 WhatsApp खुल गया! Image भी download हो गई!')
+            } else {
+              // Final fallback to download
+              const link = document.createElement('a')
+              link.download = `shlok-${Date.now()}.png`
+              link.href = URL.createObjectURL(blob)
+              link.click()
+              toast.success('📱 Image downloaded! You can now share it manually.')
+            }
           } catch (error) {
             console.error('Share failed:', error)
             // Fallback to download
@@ -187,7 +201,7 @@ canvas.width = 794
             link.download = `shlok-${Date.now()}.png`
             link.href = URL.createObjectURL(blob)
             link.click()
-            toast.success('Image downloaded! You can now share it manually.')
+            toast.success('📱 Image downloaded! You can now share it manually.')
           }
         }, 'image/png')
       }

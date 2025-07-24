@@ -207,9 +207,9 @@ transition={{ duration: 1, delay: 0.5 }}
                     const canvas = document.createElement('canvas')
                     const ctx = canvas.getContext('2d')
                     
-                    // Mobile-friendly A4 size
-                    canvas.width = 794
-                    canvas.height = 1123
+                    // Mobile-friendly size (optimized for WhatsApp)
+                    canvas.width = 600
+                    canvas.height = 800
                     
                     // Create gradient background
                     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height)
@@ -221,25 +221,25 @@ transition={{ duration: 1, delay: 0.5 }}
                     
                     // Add decorative border
                     ctx.strokeStyle = '#FF6B35'
-                    ctx.lineWidth = 8
-                    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40)
+                    ctx.lineWidth = 6
+                    ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30)
                     
                     // Add inner border
                     ctx.strokeStyle = '#FFD700'
-                    ctx.lineWidth = 4
-                    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80)
+                    ctx.lineWidth = 3
+                    ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60)
                     
-                    // Title
+                    // Title with more emojis
                     ctx.textAlign = 'center'
                     ctx.fillStyle = '#1f2937'
-                    ctx.font = 'bold 32px Arial'
-                    ctx.fillText('🏆 Hindu Culture Quiz 🏆', canvas.width / 2, 100)
-                    ctx.font = 'bold 28px Arial'
-                    ctx.fillText('Top 10 Leaderboard', canvas.width / 2, 140)
+                    ctx.font = 'bold 24px Arial'
+                    ctx.fillText('🏆 Hindu Culture Quiz 🏆', canvas.width / 2, 70)
+                    ctx.font = 'bold 20px Arial'
+                    ctx.fillText('✨ Top 10 Leaderboard ✨', canvas.width / 2, 100)
                     
                     // Leaderboard entries
                     const top10 = leaderboard.slice(0, 10)
-                    let yPos = 200
+                    let yPos = 140
                     
                     top10.forEach((entry, index) => {
                       const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
@@ -248,40 +248,42 @@ transition={{ duration: 1, delay: 0.5 }}
                       if (index < 3) {
                         ctx.fillStyle = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : '#CD7F32'
                         ctx.globalAlpha = 0.2
-                        ctx.fillRect(60, yPos - 25, canvas.width - 120, 50)
+                        ctx.fillRect(45, yPos - 18, canvas.width - 90, 36)
                         ctx.globalAlpha = 1
                       }
                       
                       // Rank and medal
                       ctx.fillStyle = '#1f2937'
-                      ctx.font = 'bold 24px Arial'
+                      ctx.font = 'bold 18px Arial'
                       ctx.textAlign = 'left'
-                      ctx.fillText(`${medal}`, 80, yPos)
+                      ctx.fillText(`${medal}`, 60, yPos)
                       
                       // Name
-                      ctx.font = '20px Arial'
-                      ctx.fillText(entry.userName, 140, yPos)
+                      ctx.font = '16px Arial'
+                      const maxNameWidth = canvas.width - 200
+                      const name = entry.userName.length > 15 ? entry.userName.substring(0, 15) + '...' : entry.userName
+                      ctx.fillText(name, 100, yPos)
                       
                       // Score
                       ctx.textAlign = 'right'
-                      ctx.font = 'bold 20px Arial'
+                      ctx.font = 'bold 16px Arial'
                       ctx.fillStyle = '#FF6B35'
-                      ctx.fillText(`${entry.percentage}%`, canvas.width - 140, yPos)
-                      ctx.font = '16px Arial'
+                      ctx.fillText(`${entry.percentage}%`, canvas.width - 60, yPos)
+                      ctx.font = '12px Arial'
                       ctx.fillStyle = '#6b7280'
-                      ctx.fillText(`(${entry.score}/${entry.totalQuestions})`, canvas.width - 80, yPos)
+                      ctx.fillText(`(${entry.score}/${entry.totalQuestions})`, canvas.width - 60, yPos + 15)
                       
-                      yPos += 70
+                      yPos += 50
                     })
                     
-                    // Footer
+                    // Footer with more emojis
                     ctx.textAlign = 'center'  
-                    ctx.font = '18px Arial'
-                    ctx.fillStyle = '#9ca3af'
-                    ctx.fillText('🕉️ Trishul Tales - Hindu Culture Quiz 🕉️', canvas.width / 2, canvas.height - 80)
-                    ctx.fillText('Explore the wisdom of Hindu traditions!', canvas.width / 2, canvas.height - 50)
                     ctx.font = '14px Arial'
-                    ctx.fillText(new Date().toLocaleDateString('hi-IN'), canvas.width / 2, canvas.height - 25)
+                    ctx.fillStyle = '#9ca3af'
+                    ctx.fillText('🕉️ Trishul Tales 🌺', canvas.width / 2, canvas.height - 60)
+                    ctx.fillText('✨ Hindu Culture Quiz ✨', canvas.width / 2, canvas.height - 40)
+                    ctx.font = '12px Arial'
+                    ctx.fillText(new Date().toLocaleDateString('hi-IN'), canvas.width / 2, canvas.height - 20)
                     
                     // Share image
                     canvas.toBlob(async (blob) => {
@@ -297,8 +299,8 @@ transition={{ duration: 1, delay: 0.5 }}
                       
 try {
                         // Try Web Share API with image (check File constructor availability)
-                        if (navigator.share && navigator.canShare && typeof File !== 'undefined') {
-                          const file = new File([blob], 'leaderboard.png', { type: 'image/png' })
+                        if (navigator.share && navigator.canShare && window.File) {
+                          const file = new window.File([blob], 'leaderboard.png', { type: 'image/png' })
                           const canShareFiles = await navigator.canShare({ files: [file] })
                           
                           if (canShareFiles) {
