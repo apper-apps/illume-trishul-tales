@@ -22,10 +22,22 @@ this.fields = [
     ];
   }
 
-  async getTodayShlok() {
+async getTodayShlok() {
     try {
       await delay(300);
       const today = new Date().toISOString().split("T")[0];
+      
+      // Check if required environment variables are available
+      if (!import.meta.env.VITE_APPER_PROJECT_ID || !import.meta.env.VITE_APPER_PUBLIC_KEY) {
+        console.error("Error fetching today's shlok: Missing environment variables VITE_APPER_PROJECT_ID or VITE_APPER_PUBLIC_KEY");
+        throw new Error("Application configuration error: Missing required environment variables");
+      }
+      
+      // Check if ApperSDK is available
+      if (!window.ApperSDK || !window.ApperSDK.ApperClient) {
+        console.error("Error fetching today's shlok: ApperSDK is not loaded or ApperClient is not available");
+        throw new Error("ApperSDK is not loaded. Please check if the SDK script is properly included.");
+      }
       
       const { ApperClient } = window.ApperSDK;
       const apperClient = new ApperClient({
@@ -51,8 +63,8 @@ this.fields = [
       const response = await apperClient.fetchRecords(this.tableName, params);
       
       if (!response.success) {
-        console.error("Error fetching today's shlok:", response.message);
-        return null;
+        console.error("Error fetching today's shlok:", response.message || "Unknown API error");
+        throw new Error(response.message || "Failed to fetch shlok data from server");
       }
       
       if (response.data && response.data.length > 0) {
@@ -79,9 +91,9 @@ this.fields = [
       if (error?.response?.data?.message) {
         console.error("Error fetching today's shlok:", error?.response?.data?.message);
       } else {
-        console.error(error.message);
+        console.error("Error fetching today's shlok:", error.message || "Unknown error occurred");
       }
-      return null;
+      throw error;
     }
   }
 
