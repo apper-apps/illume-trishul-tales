@@ -10,10 +10,9 @@ import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 
 const LeaderboardPage = () => {
-const [leaderboard, setLeaderboard] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   useEffect(() => {
     loadLeaderboard()
   }, [])
@@ -188,10 +187,11 @@ const [leaderboard, setLeaderboard] = useState([])
                   </Card>
                 </motion.div>
               ))}
-            </AnimatePresence>
+</AnimatePresence>
           </motion.div>
         )}
-{/* Share Leaderboard */}
+
+        {/* Share Leaderboard */}
         {leaderboard.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
