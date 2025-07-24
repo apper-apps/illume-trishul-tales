@@ -3,7 +3,7 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 class ShlokService {
   constructor() {
     this.tableName = 'shlok';
-    this.fields = [
+this.fields = [
       { "field": { "Name": "Name" } },
       { "field": { "Name": "Tags" } },
       { "field": { "Name": "Owner" } },
@@ -17,7 +17,8 @@ class ShlokService {
       { "field": { "Name": "meaning" } },
       { "field": { "Name": "source" } },
       { "field": { "Name": "date" } },
-      { "field": { "Name": "shared_by" } }
+      { "field": { "Name": "shared_by" } },
+      { "field": { "Name": "is_admin" } }
     ];
   }
 
