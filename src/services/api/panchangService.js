@@ -51,37 +51,47 @@ class PanchangService {
         apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
       });
       
-      const params = {
-fields: this.fields,
-      where: [
-        {
-          "FieldName": "date",
-          "Operator": "EqualTo",
-          "Values": [dateStr]
+const params = {
+        fields: [
+          { "field": { "Name": "Name" } },
+          { "field": { "Name": "date" } },
+          { "field": { "Name": "tithi" } },
+          { "field": { "Name": "nakshatra" } },
+          { "field": { "Name": "yoga" } },
+          { "field": { "Name": "karana" } },
+          { "field": { "Name": "sunrise" } },
+          { "field": { "Name": "sunset" } },
+          { "field": { "Name": "moonrise" } },
+          { "field": { "Name": "moonset" } },
+          { "field": { "Name": "festivals" } },
+          { "field": { "Name": "muhurats" } }
+        ],
+        where: [
+          {
+            "FieldName": "date",
+            "Operator": "EqualTo",
+            "Values": [dateStr]
+          }
+        ],
+        pagingInfo: {
+          limit: 1,
+          offset: 0
         }
-      ],
-      pagingInfo: {
-        limit: 1,
-        offset: 0
+      };
+    
+      const response = await apperClient.fetchRecords(this.tableName, params);
+    
+      if (!response.success) {
+        const errorMessage = response.message || "Failed to fetch panchang data";
+        console.error("Error fetching panchang in panchang service:", errorMessage);
+        const { toast } = await import('react-toastify');
+        toast.error(errorMessage);
+        return null;
       }
-    };
     
-    const response = await apperClient.fetchRecords(this.tableName, params);
-    
-    if (!response.success) {
-      const errorMessage = response.message || "Failed to fetch panchang data";
-      console.error("Error fetching panchang in panchang service:", errorMessage);
-      const { toast } = await import('react-toastify');
-      toast.error(errorMessage);
-      return null;
-    }
-    
-    if (!response.data || response.data.length === 0) {
-      console.log("No panchang data found for date:", dateStr);
-      return null;
-    }
-      
-      if (response.data && response.data.length > 0) {
+      if (!response.data || response.data.length === 0) {
+        console.log("No panchang data found for date:", dateStr);
+      } else {
         const panchang = response.data[0];
         // Parse festivals and muhurats if they are strings
         return {
@@ -90,14 +100,34 @@ fields: this.fields,
             panchang.festivals.split(',').map(f => f.trim()).filter(f => f) : 
             panchang.festivals || [],
           muhurats: typeof panchang.muhurats === 'string' ? 
-            JSON.parse(panchang.muhurats || '[]') : 
+            (() => {
+              try {
+                return JSON.parse(panchang.muhurats || '[]');
+              } catch (e) {
+                console.warn("Failed to parse muhurats JSON:", e);
+                return [];
+              }
+            })() : 
             panchang.muhurats || []
         };
       }
       
       // If no panchang for the date, get a random one and use it as base
-      const randomParams = {
-        fields: this.fields,
+const randomParams = {
+        fields: [
+          { "field": { "Name": "Name" } },
+          { "field": { "Name": "date" } },
+          { "field": { "Name": "tithi" } },
+          { "field": { "Name": "nakshatra" } },
+          { "field": { "Name": "yoga" } },
+          { "field": { "Name": "karana" } },
+          { "field": { "Name": "sunrise" } },
+          { "field": { "Name": "sunset" } },
+          { "field": { "Name": "moonrise" } },
+          { "field": { "Name": "moonset" } },
+          { "field": { "Name": "festivals" } },
+          { "field": { "Name": "muhurats" } }
+        ],
         pagingInfo: {
           limit: 1,
           offset: Math.floor(Math.random() * 10)
@@ -116,7 +146,14 @@ fields: this.fields,
             basePanchang.festivals.split(',').map(f => f.trim()).filter(f => f) : 
             basePanchang.festivals || [],
           muhurats: typeof basePanchang.muhurats === 'string' ? 
-            JSON.parse(basePanchang.muhurats || '[]') : 
+            (() => {
+              try {
+                return JSON.parse(basePanchang.muhurats || '[]');
+              } catch (e) {
+                console.warn("Failed to parse muhurats JSON:", e);
+                return [];
+              }
+            })() : 
             basePanchang.muhurats || []
         };
       }
