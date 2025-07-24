@@ -106,13 +106,13 @@ class QuizService {
         fields: this.quizFields
       };
       
-      const response = await apperClient.getRecordById(this.quizTableName, id, params);
+const response = await apperClient.getRecordById(this.quizTableName, id, params);
       
-      if (!response || !response.data) {
+      if (!response || (!response.data && !response.success)) {
         throw new Error("Quiz not found");
       }
       
-      return response.data;
+      return response.data || response;
     } catch (error) {
       if (error?.response?.data?.message) {
         console.error(`Error fetching quiz with ID ${id}:`, error?.response?.data?.message);
@@ -190,13 +190,14 @@ class QuizService {
         }
       };
       
-      const response = await apperClient.fetchRecords(this.questionTableName, params);
+const response = await apperClient.fetchRecords(this.questionTableName, params);
       
-      if (!response || !response.data || response.data.length === 0) {
+      if (!response || (!response.data && !response.success) || (response.data && response.data.length === 0)) {
         return [];
       }
       
-      return response.data.map(q => ({
+      const questionsData = response.data || [];
+      return questionsData.map(q => ({
         ...q,
         options: typeof q.options === 'string' ? q.options.split('\n') : q.options
       }));
