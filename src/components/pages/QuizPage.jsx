@@ -12,23 +12,24 @@ import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
 
 const QuizPage = () => {
-  const { quizId } = useParams()
-  const navigate = useNavigate()
+  const { quizId } = useParams();
+  const navigate = useNavigate();
   
-  const [quiz, setQuiz] = useState(null)
-  const [questions, setQuestions] = useState([])
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [selectedAnswer, setSelectedAnswer] = useState(null)
-  const [answers, setAnswers] = useState({})
-  const [showResult, setShowResult] = useState(false)
-  const [score, setScore] = useState(0)
-  const [timeLeft, setTimeLeft] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [quizCompleted, setQuizCompleted] = useState(false)
-  const [showNameModal, setShowNameModal] = useState(false)
-  const [userName, setUserName] = useState("")
-useEffect(() => {
+  const [quiz, setQuiz] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [answers, setAnswers] = useState({});
+  const [showResult, setShowResult] = useState(false);
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
     if (quizId) {
       loadQuiz()
     } else {
@@ -122,39 +123,39 @@ const loadRandomQuiz = async () => {
   }
 
 const handleSubmitQuiz = async () => {
-    let calculatedScore = 0
+    let calculatedScore = 0;
     questions.forEach((question, index) => {
-      if (answers[index] === question.correctAnswer) {
-        calculatedScore++
+      if (answers[index] === question.correct_answer) {
+        calculatedScore++;
       }
-    })
+    });
 
-    setScore(calculatedScore)
-    setShowNameModal(true)
-  }
+    setScore(calculatedScore);
+    setShowNameModal(true);
+  };
 
-const handleNameSubmit = async () => {
+  const handleNameSubmit = async () => {
     if (!userName.trim()) {
-      toast.error("कृपया अपना नाम दर्ज करें")
-      return
+      toast.error("कृपया अपना नाम दर्ज करें");
+      return;
     }
 
-    setShowNameModal(false)
-    setQuizCompleted(true)
+    setShowNameModal(false);
+    setQuizCompleted(true);
 
-// Save score
+    // Save score
     try {
       await quizService.saveScore({
         userName: userName.trim(),
         score: score,
         totalQuestions: questions.length,
         category: quiz?.category || "General"
-      })
+      });
     } catch (err) {
-      console.error("Failed to save score:", err)
+      console.error("Failed to save score:", err);
     }
-    toast.success(`🎉 Quiz completed! You scored ${score}/${questions.length} ✨`)
-  }
+    toast.success(`🎉 Quiz completed! You scored ${score}/${questions.length} ✨`);
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)
@@ -557,9 +558,9 @@ try {
                     option={option}
                     index={index}
                     selected={selectedAnswer === index}
-                    onClick={() => handleAnswerSelect(index)}
+onClick={() => handleAnswerSelect(index)}
                     showResult={showResult}
-                    isCorrect={index === currentQ.correctAnswer}
+                    isCorrect={index === currentQ.correct_answer}
                   />
                 ))}
               </div>
@@ -604,7 +605,7 @@ try {
 </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default QuizPage
+export default QuizPage;

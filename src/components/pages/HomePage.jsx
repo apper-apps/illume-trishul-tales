@@ -37,9 +37,10 @@ const HomePage = () => {
       ])
 
       setFeaturedQuizzes(quizzes)
-      setTodayShlok(shlok)
+setTodayShlok(shlok)
       setTodayPanchang(panchang)
     } catch (err) {
+      console.error("Error loading home data:", err);
       setError("Failed to load content. Please try again.")
     } finally {
       setLoading(false)

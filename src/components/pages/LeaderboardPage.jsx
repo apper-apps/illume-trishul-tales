@@ -140,12 +140,13 @@ const LeaderboardPage = () => {
                         </div>
 
                         {/* User info */}
+{/* User info */}
                         <div>
                           <h3 className="text-lg font-semibold text-gray-800">
-                            {entry.userName}
+                            {entry.userName || entry.user_name}
                           </h3>
                           <p className="text-sm text-gray-600">
-                            {formatDate(entry.completedAt)}
+                            {formatDate(entry.completedAt || entry.completed_at)}
                           </p>
                         </div>
                       </div>
@@ -159,7 +160,7 @@ const LeaderboardPage = () => {
                           <ApperIcon name="Star" className="w-5 h-5 text-gold-500" />
                         </div>
                         <p className="text-sm text-gray-600">
-                          {entry.score}/{entry.totalQuestions} correct
+                          {entry.score}/{entry.totalQuestions || entry.total_questions} correct
                         </p>
                         <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                           {entry.category}
