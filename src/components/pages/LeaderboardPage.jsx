@@ -10,23 +10,13 @@ import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 
 const LeaderboardPage = () => {
-  const [leaderboard, setLeaderboard] = useState([])
+const [leaderboard, setLeaderboard] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [isRealTimeActive, setIsRealTimeActive] = useState(true)
 
   useEffect(() => {
     loadLeaderboard()
-    
-    // Set up real-time updates every 30 seconds
-    const interval = setInterval(() => {
-      if (isRealTimeActive) {
-        updateLeaderboard()
-      }
-    }, 30000)
-
-    return () => clearInterval(interval)
-  }, [isRealTimeActive])
+  }, [])
 
   const loadLeaderboard = async () => {
     try {
@@ -41,26 +31,6 @@ const LeaderboardPage = () => {
     }
   }
 
-  const updateLeaderboard = async () => {
-    try {
-      const data = await quizService.getRealTimeLeaderboard()
-      const prevLeaderboard = [...leaderboard]
-      
-      // Check for changes and show toast for new high scores
-      if (data.length > 0 && prevLeaderboard.length > 0) {
-        const newTopScore = data[0]
-        const prevTopScore = prevLeaderboard[0]
-        
-        if (newTopScore?.Id !== prevTopScore?.Id) {
-          toast.success(`🏆 New leader: ${newTopScore.userName}!`)
-        }
-      }
-      
-      setLeaderboard(data)
-    } catch (err) {
-      console.error("Failed to update leaderboard:", err)
-    }
-  }
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -125,25 +95,9 @@ const LeaderboardPage = () => {
             <h1 className="text-4xl font-bold text-gradient">Quiz Leaderboard</h1>
             <ApperIcon name="Trophy" className="w-8 h-8 text-gold-500" />
           </div>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+<p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Top performers in Hindu culture and mythology quizzes
           </p>
-          
-          {/* Real-time indicator */}
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className={`w-2 h-2 rounded-full ${isRealTimeActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
-            <span className="text-sm text-gray-600">
-              {isRealTimeActive ? 'Live updates active' : 'Updates paused'}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsRealTimeActive(!isRealTimeActive)}
-              className="ml-2"
-            >
-              <ApperIcon name={isRealTimeActive ? "Pause" : "Play"} className="w-4 h-4" />
-            </Button>
-          </div>
         </motion.div>
 
         {/* Leaderboard */}
@@ -245,46 +199,72 @@ const LeaderboardPage = () => {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="mt-8 text-center"
           >
-            <Button 
+<Button 
               onClick={async () => {
-                const top10 = leaderboard.slice(0, 10)
-                let leaderboardText = "🏆 Hindu Culture Quiz Leaderboard - Top 10 🏆\n\n"
-                
-                top10.forEach((entry, index) => {
-                  const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
-                  leaderboardText += `${medal} ${entry.userName} - ${entry.percentage}% (${entry.score}/${entry.totalQuestions})\n`
-                })
-                
-                leaderboardText += `\n🔗 Take the quiz yourself: ${window.location.origin}/quiz\n\n🕉️ Trishul Tales - Hindu Culture Quiz\nExplore the wisdom of Hindu traditions and mythology!`
-                
-                // Try Web Share API first
-                if (navigator.share) {
-                  try {
-                    await navigator.share({ 
-                      title: 'Hindu Culture Quiz Leaderboard', 
-                      text: leaderboardText
-                    })
-                    toast.success("Leaderboard shared successfully!")
-                  } catch (error) {
-                    console.log('Share failed, falling back to clipboard:', error)
-                    // Fall back to clipboard if share fails
+                try {
+                  const top10 = leaderboard.slice(0, 10)
+                  let leaderboardText = "🏆 Hindu Culture Quiz Leaderboard - Top 10 🏆\n\n"
+                  
+                  top10.forEach((entry, index) => {
+                    const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`
+                    leaderboardText += `${medal} ${entry.userName} - ${entry.percentage}% (${entry.score}/${entry.totalQuestions})\n`
+                  })
+                  
+                  leaderboardText += `\n🔗 Take the quiz yourself: ${window.location.origin}/quiz\n\n🕉️ Trishul Tales - Hindu Culture Quiz\nExplore the wisdom of Hindu traditions and mythology!`
+                  
+                  // Create WhatsApp URL for better mobile compatibility
+                  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(leaderboardText)}`
+                  
+                  // Try Web Share API first (works well on mobile)
+                  if (navigator.share && navigator.userAgent.includes('Mobile')) {
                     try {
-                      await navigator.clipboard.writeText(leaderboardText)
-                      toast.success("Leaderboard copied! Now paste it on WhatsApp")
-                    } catch (clipboardError) {
-                      console.error('Clipboard failed:', clipboardError)
-                      toast.error("Could not copy. Please copy the text manually")
+                      await navigator.share({ 
+                        title: 'Hindu Culture Quiz Leaderboard', 
+                        text: leaderboardText
+                      })
+                      toast.success("Leaderboard shared successfully!")
+                      return
+                    } catch (shareError) {
+                      // User cancelled or share failed, continue with other methods
+                      console.log('Share API failed:', shareError)
                     }
                   }
-                } else {
-                  // No share API, try clipboard directly
+                  
+                  // Try opening WhatsApp directly
+                  try {
+                    const newWindow = window.open(whatsappUrl, '_blank')
+                    if (newWindow) {
+                      toast.success("Opening WhatsApp... Please send the message!")
+                      return
+                    }
+                  } catch (whatsappError) {
+                    console.log('WhatsApp direct open failed:', whatsappError)
+                  }
+                  
+                  // Fall back to clipboard
                   try {
                     await navigator.clipboard.writeText(leaderboardText)
-                    toast.success("Leaderboard copied! Now paste it on WhatsApp")
-                  } catch (error) {
-                    console.error('Clipboard not available:', error)
-                    toast.error("Could not copy. Please copy the text manually")
+                    toast.success("Leaderboard copied! Now paste it on WhatsApp", {
+                      autoClose: 5000
+                    })
+                  } catch (clipboardError) {
+                    console.error('All sharing methods failed:', clipboardError)
+                    // Create a temporary textarea for manual copy
+                    const textarea = document.createElement('textarea')
+                    textarea.value = leaderboardText
+                    document.body.appendChild(textarea)
+                    textarea.select()
+                    try {
+                      document.execCommand('copy')
+                      toast.success("Leaderboard copied! Now paste it on WhatsApp")
+                    } catch (execError) {
+                      toast.error("Please copy the leaderboard text manually")
+                    }
+                    document.body.removeChild(textarea)
                   }
+                } catch (error) {
+                  console.error('Sharing error:', error)
+                  toast.error("Failed to share leaderboard. Please try again.")
                 }
               }}
               className="bg-green-500 hover:bg-green-600 text-white mb-6"
@@ -292,7 +272,6 @@ const LeaderboardPage = () => {
               <ApperIcon name="Share2" className="w-4 h-4 mr-2" />
               Share Top 10 on WhatsApp
             </Button>
-          </motion.div>
         )}
 
         {/* Action buttons */}
@@ -310,11 +289,11 @@ const LeaderboardPage = () => {
             <ApperIcon name="Shuffle" className="w-4 h-4 mr-2" />
             Random Challenge
           </Button>
-          <Button variant="outline" onClick={loadLeaderboard}>
+<Button variant="outline" onClick={loadLeaderboard}>
             <ApperIcon name="RefreshCw" className="w-4 h-4 mr-2" />
             Refresh
           </Button>
-</motion.div>
+        </motion.div>
       </div>
     </div>
   )
