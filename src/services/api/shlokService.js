@@ -60,11 +60,17 @@ async getTodayShlok() {
         }
       };
       
-      const response = await apperClient.fetchRecords(this.tableName, params);
+const response = await apperClient.fetchRecords(this.tableName, params);
+      
+      if (!response) {
+        console.error("Error fetching today's shlok: No response received from server");
+        throw new Error("No response received from server");
+      }
       
       if (!response.success) {
-        console.error("Error fetching today's shlok:", response.message || "Unknown API error");
-        throw new Error(response.message || "Failed to fetch shlok data from server");
+        const errorMsg = response.message || response.error || "API request failed";
+        console.error("Error fetching today's shlok:", errorMsg);
+        throw new Error(errorMsg);
       }
       
       if (response.data && response.data.length > 0) {
@@ -87,13 +93,20 @@ async getTodayShlok() {
       }
       
       return null;
-    } catch (error) {
+} catch (error) {
+      let errorMessage = "Unknown error occurred";
+      
       if (error?.response?.data?.message) {
-        console.error("Error fetching today's shlok:", error?.response?.data?.message);
+        errorMessage = error.response.data.message;
+        console.error("Error fetching today's shlok from API:", errorMessage);
+      } else if (error.message) {
+        errorMessage = error.message;
+        console.error("Error fetching today's shlok:", errorMessage);
       } else {
-        console.error("Error fetching today's shlok:", error.message || "Unknown error occurred");
+        console.error("Error fetching today's shlok: Unexpected error format", error);
       }
-      throw error;
+      
+      throw new Error(errorMessage);
     }
   }
 
@@ -111,20 +124,36 @@ async getTodayShlok() {
         fields: this.fields
       };
       
-      const response = await apperClient.getRecordById(this.tableName, id, params);
+const response = await apperClient.getRecordById(this.tableName, id, params);
       
-      if (!response || !response.data) {
+      if (!response) {
+        throw new Error("No response received from server");
+      }
+      
+      if (!response.success && response.success !== undefined) {
+        const errorMsg = response.message || response.error || "Failed to fetch shlok";
+        throw new Error(errorMsg);
+      }
+      
+      if (!response.data) {
         throw new Error("Shlok not found");
       }
       
       return response.data;
     } catch (error) {
+let errorMessage = "Shlok not found";
+      
       if (error?.response?.data?.message) {
-        console.error(`Error fetching shlok with ID ${id}:`, error?.response?.data?.message);
+        errorMessage = error.response.data.message;
+        console.error(`Error fetching shlok with ID ${id} from API:`, errorMessage);
+      } else if (error.message) {
+        errorMessage = error.message;
+        console.error(`Error fetching shlok with ID ${id}:`, errorMessage);
       } else {
-        console.error(error.message);
+        console.error(`Error fetching shlok with ID ${id}: Unexpected error format`, error);
       }
-      throw new Error("Shlok not found");
+      
+      throw new Error(errorMessage);
     }
   }
 
@@ -152,18 +181,30 @@ async getTodayShlok() {
         }
       };
       
-      const response = await apperClient.fetchRecords(this.tableName, params);
+const response = await apperClient.fetchRecords(this.tableName, params);
       
-      if (!response || !response.data || response.data.length === 0) {
+      if (!response) {
+        console.error("Error fetching shlok archive: No response received");
         return [];
       }
       
+      if (!response.success && response.success !== undefined) {
+        const errorMsg = response.message || response.error || "Failed to fetch archive";
+        console.error("Error fetching shlok archive:", errorMsg);
+        return [];
+      }
+      
+      if (!response.data || response.data.length === 0) {
+        return [];
+      }
       return response.data;
     } catch (error) {
-      if (error?.response?.data?.message) {
-        console.error("Error fetching shlok archive:", error?.response?.data?.message);
+if (error?.response?.data?.message) {
+        console.error("Error fetching shlok archive from API:", error.response.data.message);
+      } else if (error.message) {
+        console.error("Error fetching shlok archive:", error.message);
       } else {
-        console.error(error.message);
+        console.error("Error fetching shlok archive: Unexpected error format", error);
       }
       return [];
     }
@@ -197,16 +238,29 @@ async getTodayShlok() {
       
       const response = await apperClient.fetchRecords(this.tableName, params);
       
-      if (!response.success || !response.data || response.data.length === 0) {
+if (!response) {
+        console.error("Error fetching shlok by date: No response received");
+        return null;
+      }
+      
+      if (!response.success && response.success !== undefined) {
+        const errorMsg = response.message || response.error || "Failed to fetch shlok by date";
+        console.error("Error fetching shlok by date:", errorMsg);
+        return null;
+      }
+      
+      if (!response.data || response.data.length === 0) {
         return null;
       }
       
       return response.data[0];
     } catch (error) {
-      if (error?.response?.data?.message) {
-        console.error("Error fetching shlok by date:", error?.response?.data?.message);
+if (error?.response?.data?.message) {
+        console.error("Error fetching shlok by date from API:", error.response.data.message);
+      } else if (error.message) {
+        console.error("Error fetching shlok by date:", error.message);
       } else {
-        console.error(error.message);
+        console.error("Error fetching shlok by date: Unexpected error format", error);
       }
       return null;
     }
